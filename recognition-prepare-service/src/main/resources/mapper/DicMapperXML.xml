@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.recognition.prepare.service.mapper.DicMapper">
+    <select id="list" resultType="com.xtxk.recognition.prepare.service.dto.dic.DicParentItemDto">
+        SELECT
+            id as id,
+            dic_code as dicCode,
+            dic_name as dicName
+        FROM
+            t_dic
+        where
+        1=1
+        <if test="dicName != null and dicName != ''">
+            AND dic_name LIKE concat(
+            '%',#{dicName},'%')
+        </if>
+        and deleted=0
+    </select>
+
+    <select id="queryById" resultType="com.xtxk.recognition.prepare.service.entity.Dic">
+      SELECT
+            id as id,
+            dic_code as dicCode,
+            dic_name as dicName,
+            dic_desc as dicDesc,
+            dic_parent_code as dicParentCode
+        FROM
+            t_dic
+        WHERE
+            id = #{id}
+
+            AND deleted = 0
+    </select>
+
+    <select id="queryParentName" resultType="java.lang.String">
+        SELECT
+            dic_name
+        FROM
+            t_dic
+        WHERE
+            dic_code = #{dicParentCode}
+
+            AND deleted = 0
+    </select>
+
+    <select id="queryItemsByDicId" resultType="com.xtxk.recognition.prepare.service.dto.dic.DicAddItemDto">
+        SELECT
+            t.id AS id,
+            t.item_code AS itemCode,
+            t.item_name AS itemName,
+            t.item_desc as itemDesc,
+            t.`enable` AS enable,
+            d.item_code as itemParentCode,
+            d.item_name as itemParentName
+        FROM
+            t_dic_item t
+            LEFT JOIN t_dic_item d ON t.item_parent_code = d.item_code
+            AND d.deleted = 0
+        WHERE
+            t.dic_id = #{dicId}
+            AND t.deleted = 0
+    </select>
+
+    <select id="superiorList" resultType="com.xtxk.recognition.prepare.service.dto.dic.SuperiorItemDto">
+        select
+        dic_code as dicCode,
+        dic_name AS dicName
+        FROM
+            t_dic
+    </select>
+
+    <select id="queryIdByCode" resultType="java.lang.Integer">
+        SELECT
+            id
+        FROM
+            t_dic
+        WHERE
+            dic_code = #{dicCode}
+            and deleted = 0
+    </select>
+
+
+
+    <!--新增字典元素-->
+    <insert id="add" parameterType="com.xtxk.recognition.prepare.service.entity.Dic" keyProperty="id" useGeneratedKeys="true">
+        insert into t_dic(dic_code, dic_name, dic_desc, dic_parent_code,deleted)
+        values (#{dicCode}, #{dicName}, #{dicDesc}, #{dicParentCode},#{deleted})
+    </insert>
+
+    <select id="checkCodeUnique" resultType="java.lang.String">
+        SELECT
+            dic_code
+        FROM
+            t_dic
+        WHERE
+            dic_code = #{dicCode}
+            and deleted = 0
+    </select>
+
+    <select id="queryDicNameByDicCode" resultType="java.lang.String">
+        SELECT
+            dic_name
+        FROM
+            t_dic
+        WHERE
+            dic_code = #{dicCode}
+            AND deleted = 0
+    </select>
+
+    <update id="updateDic">
+        update t_dic
+        set
+        dic_desc=#{dicDesc}
+        where id=#{id}
+    </update>
+</mapper>

@@ -1,0 +1,26 @@
+version: "2"
+
+services:
+  business-server-app:
+    image: registry.xingtu.com:8088/openvone/biz-service/business-server:V6.0.4
+    ports:
+      - 9527:9527
+    volumes:
+      - /data:/business
+    networks:
+      - signle-network
+    restart: always
+
+  recogniztion-prepare-service:
+    image: registry.xingtu.com:8088/openvone/biz-service/recognition-prepare-server:V6.0.4
+    ports:
+      - 9529:9529
+    networks:
+      - signle-network
+    restart: always
+    volumes:
+      - /data:/prepare
+
+networks:
+  signle-network:
+    driver: bridge

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.recognition.prepare.service.mapper.LoopAlgResMapper">
+    <select id="queryloopRes" resultType="com.xtxk.recognition.prepare.service.dto.loopAlg.LoopAlgResVo">
+        select
+        tlad.loop_id as loopId,
+        tlad.alg_code as algCode,
+        tlad.event_code as eventCode,
+        tlad.alg_order as algOrder,
+        tlad.loop_time as loopTime,
+        tlad.is_enable as isEnable,
+        tlri.resource_id as resourceId,
+        md.device_name as resourceName
+        from t_loop_alg_dev tlad
+        inner join t_loop_res_item tlri on tlri.loop_id =tlad.loop_id
+        left join monitor_device md on md.device_id = tlri.resource_id
+        where 1=1
+        <if test="code !=null and code !=''">
+            and tlad.alg_code =#{code}
+        </if>
+        <if test="eventCode !=null and eventCode !=''">
+            and tlad.event_code =#{eventCode}
+        </if>
+        <if test="keyWords!=null and keyWords!=''">
+            and md.device_name like concat ('%',#{keyWords},'%')
+        </if>
+    </select>
+    <insert id="addLoopRes" parameterType="com.xtxk.recognition.prepare.service.dto.loopAlg.LoopAlgResReqDto">
+         insert into t_loop_alg_dev(loop_id,alg_code,event_code,alg_order,loop_time,is_enable)
+         values(#{entity.loopId},#{entity.algCode},#{entity.eventCode},#{entity.algOrder},#{entity.loopTime},#{entity.isEnable});
+         <foreach collection="entity.resourceIds" separator=";"  item="item">
+             insert into t_loop_res_item(loop_id,resource_id) value (#{entity.loopId},#{item})
+         </foreach>
+    </insert>
+    <delete id="delLoopRes" parameterType="java.lang.String">
+         delete from t_loop_res_item where loop_id =#{loopId};
+         delete from t_loop_alg_dev where loop_id=#{loopId};
+    </delete>
+    <delete id="delLoopResItem" parameterType="java.lang.String">
+        delete from t_loop_res_item where loop_id =#{loopId};
+    </delete>
+    <select id="querySingleloopRes"  resultType="com.xtxk.recognition.prepare.service.dto.loopAlg.LoopAlgResVo">
+        select
+        tlad.loop_id as loopId,
+        tlad.alg_code as algCode,
+        tlad.event_code as eventCode,
+        tlad.alg_order as algOrder,
+        tlad.loop_time as loopTime,
+        tlad.is_enable as isEnable,
+        tlri.resource_id as resourceId,
+        md.device_name as resourceName
+        from t_loop_alg_dev tlad
+        inner join t_loop_res_item tlri on tlri.loop_id =tlad.loop_id
+        left join monitor_device md on md.device_id = tlri.resource_id
+        where 1=1
+        <if test="loopId !=null and loopId !=''">
+            and tlad.loop_id =#{loopId}
+        </if>
+    </select>
+    <update id="editLoopRes" parameterType="com.xtxk.recognition.prepare.service.dto.loopAlg.LoopAlgResReqDto">
+        update t_loop_alg_dev
+        <set>
+            <if test="entity.loopTime!=null">
+                loop_time =#{entity.loopTime},
+            </if>
+            <if test="entity.isEnable!=null">
+                <choose>
+                    <when test="entity.isEnable">
+                        is_enable=1,
+                    </when>
+                    <otherwise>
+                        is_enable=0,
+                    </otherwise>
+                </choose>
+            </if>
+        </set>
+        where loop_id =#{entity.loopId};
+        <if test="entity.resourceIds!=null">
+            <foreach collection="entity.resourceIds" item="item" separator=";">
+                insert into t_loop_res_item(loop_id,resource_id) value (#{entity.loopId},#{item})
+            </foreach>
+        </if>
+    </update>
+    <update id="swapLoopRes" parameterType="com.xtxk.recognition.prepare.service.dto.loopAlg.SwapLoopResReqVo">
+        update t_loop_alg_dev set alg_order=#{entity.firstOrder} where loop_id=#{entity.first};
+        update t_loop_alg_dev set alg_order=#{entity.secondOrder} where loop_id=#{entity.second};
+    </update>
+
+    <select id="queryloopResByResId"  resultType="com.xtxk.recognition.prepare.service.dto.loopAlg.LoopAlgResVo">
+        select
+        tlad.loop_id as loopId,
+        tlad.alg_code as algCode,
+        tlad.event_code as eventCode,
+        tlad.alg_order as algOrder,
+        tlad.loop_time as loopTime,
+        tlad.is_enable as isEnable,
+        tlri.resource_id as resourceId,
+        md.device_name as resourceName
+        from t_loop_alg_dev tlad
+        inner join t_loop_res_item tlri on tlri.loop_id =tlad.loop_id
+        left join monitor_device md on md.device_id = tlri.resource_id
+        where 1=1 and tlad.is_enable=true
+        <if test="resourceId !=null and resourceId !=''">
+            and tlri.resource_id =#{resourceId}
+        </if>
+    </select>
+
+    <select id="queryAlgLoopModelByCondition" resultType="com.xtxk.recognition.prepare.service.dto.loopAlg.AlgLoopModelByConditionDto">
+        select
+            tlad.loop_id as loopId,
+            tlad.alg_code as algCode,
+            tlad.event_code as eventCode,
+            tlad.alg_order as algOrder,
+            tlad.loop_time as loopTime,
+            tlri.resource_id as resourceId,
+            md.device_name as resourceName,
+            md.device_sip_id as resourceSipId,
+            tapc.violation_interval as violationInterval,
+            tapc.violation_duration as violationDuration,
+            tapc.web_coordinate as webCoordinate,
+            tapc.frame_interval as frameInterval
+        from t_loop_alg_dev tlad
+        inner join t_loop_res_item tlri on tlri.loop_id=tlad.loop_id
+        left join t_alarm_policy_configuration tapc on tapc.resource_id=tlri.resource_id and tapc.alg_code=tlad.alg_code and tapc.event_code = tlad.event_code
+        left join monitor_device md on md.device_id = tlri.resource_id
+        where 1=1 and tlad.is_enable=true
+        <if test="loopId!=null">
+            and tlad.loop_id=#{loopId}
+        </if>
+        <if test="resourceId!=null">
+            and tlri.resource_id =#{resourceId}
+        </if>
+    </select>
+
+    <insert id="insertfeature" parameterType="com.xtxk.recognition.prepare.service.dto.loopAlg.FeatureDto">
+        INSERT INTO `intelligence_community`.`t_user_eigen`(`person_id`, `eigen`) VALUES 
+        <foreach collection="list" item="item" separator=",">
+            (#{item.personId}, #{item.feature})
+        </foreach>
+    </insert>
+    <select id="selectfeatureAll" resultType="com.xtxk.recognition.prepare.service.dto.loopAlg.FeatureDto">
+        select
+        person_id as personId,
+        eigen as feature
+        from t_user_eigen
+    </select>
+
+    <select id="queryMaxOrder" resultType="java.lang.Integer">
+        SELECT alg_order FROM t_loop_alg_dev where alg_code=#{algCode} and event_code=#{eventCode} order by alg_order desc limit 1
+    </select>
+</mapper>

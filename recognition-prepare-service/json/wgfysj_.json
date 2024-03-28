@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "data": [
+    {
+      "person_bbox": [20,20,20,500],
+      "person_conf":0.9,
+      "face_bbox":[30,30,50,50],
+      "face_conf":0.8
+    }
+  ]
+}

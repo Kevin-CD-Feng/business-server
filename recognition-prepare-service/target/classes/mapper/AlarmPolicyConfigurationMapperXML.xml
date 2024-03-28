@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.recognition.prepare.service.mapper.AlarmPolicyConfigurationMapper">
+
+    <!--删除-->
+    <delete id="deleteByResourceId">
+        DELETE FROM t_alarm_policy_configuration
+        WHERE
+        resource_id = #{resourceId}
+    </delete>
+
+    <insert id="insert" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=";">
+            insert into t_alarm_policy_configuration (`resource_id`, `event_code`,`alg_code`,`violation_length`,`web_coordinate`,`create_time`,`create_user`,`violation_interval`,`violation_duration`,`frame_interval`)
+            values (#{item.resourceId}, #{item.eventCode},#{item.algCode},#{item.violationLength}, #{item.webCoordinate}, #{item.createTime},#{item.createUser},#{item.violationInterval},#{item.violationDuration},#{item.frameInterval})
+        </foreach>
+    </insert>
+
+    <select id="list" resultType="com.xtxk.recognition.prepare.service.entity.AlarmPolicyConfiguration">
+        SELECT
+        id as id,
+        resource_id as resourceId,
+        event_code as eventCode,
+        alg_code as algCode,
+        violation_length as violationLength,
+        web_coordinate as webCoordinate,
+        violation_begin_date as violationBeginDate,
+        violation_end_date as violationEndDate,
+        violation_interval as violationInterval,
+        violation_duration as violationDuration,
+        frame_interval as frameInterval
+        from t_alarm_policy_configuration
+        where
+        1 = 1
+        AND resource_id = #{resourceId}
+        and deleted = 0
+    </select>
+
+    <delete id="batchDelete">
+        delete from t_alarm_policy_configuration
+        where
+        1=1
+        <foreach collection="list" open="and id in(" close=")" item="item" separator=",">
+            #{item.id,jdbcType=INTEGER}
+        </foreach>
+    </delete>
+
+    <update id="batchUpdate">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update t_alarm_policy_configuration
+            <set>
+                <if test="item.eventCode != null and item.eventCode != ''">
+                    event_code = #{item.eventCode},
+                </if>
+                <if test="item.resourceId != null and item.resourceId != ''">
+                    resource_id = #{item.resourceId},
+                </if>
+                <if test="item.violationLength != null and item.violationLength != ''">
+                    violation_length = #{item.violationLength},
+                </if>
+                <if test="item.webCoordinate != null and item.webCoordinate != ''">
+                    web_coordinate = #{item.webCoordinate},
+                </if>
+                <if test="item.updateTime != null">
+                    update_time = #{item.updateTime},
+                </if>
+                <if test="item.violationInterval!=null">
+                    violation_interval = #{item.violationInterval},
+                </if>
+                <if test="item.violationDuration!=null">
+                    violation_duration =#{item.violationDuration},
+                </if>
+                <if test="item.violationBeginDate!=null">
+                    violation_begin_date =#{item.violationBeginDate},
+                </if>
+                <if test="item.violationEndDate!=null">
+                    violation_end_date =#{item.violationEndDate},
+                </if>
+                <if test="item.frameInterval!=null">
+                    frame_interval =#{item.frameInterval},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="queryAll" resultType="com.xtxk.recognition.prepare.service.entity.AlarmPolicyConfiguration">
+        SELECT
+        id as id,
+        resource_id as resourceId,
+        event_code as eventCode,
+        alg_code as algCode,
+        violation_interval as violationInterval,
+        violation_duration as violationDuration,
+        violation_length as violationLength,
+        web_coordinate as webCoordinate,
+        violation_begin_date as violationBeginDate,
+        violation_end_date as violationEndDate
+        from t_alarm_policy_configuration
+        where
+        1 = 1
+        and deleted = 0
+    </select>
+    
+    <select id="queryByResourceId" resultType="com.xtxk.recognition.prepare.service.entity.AlarmPolicyConfiguration">
+        select * from t_alarm_policy_configuration where resource_id=#{resourceId} and deleted=0
+    </select>
+
+    <select id="queryDevice" resultType="com.xtxk.recognition.prepare.service.entity.AlarmPolicyConfiguration">
+        select distinct resource_id as resourceId,d.device_name as eventCode,d.device_sip_id webCoordinate,ifnull(dvr.status,0) deleted
+        from t_alarm_policy_configuration c
+        left join monitor_device d on c.resource_id = d.device_id
+        left join device_video_record dvr on c.resource_id = dvr.device_id
+        where deleted = 0
+    </select>
+
+    <select id="queryById" resultType="com.xtxk.recognition.prepare.service.entity.AlarmPolicyConfiguration">
+        select distinct resource_id as resourceId,d.device_sip_id webCoordinate,
+                        c.alg_code as algCode,c.event_code as eventCode
+        from t_alarm_policy_configuration c left join monitor_device d on c.resource_id = d.device_id
+        where deleted = 0 and c.resource_id = #{resourceId}
+    </select>
+
+    <delete id="delAlarmPolicyByCodeAndResourceId">
+       DELETE FROM t_alarm_policy_configuration
+        WHERE alg_code=#{algCode} and event_code=#{eventCode} and resource_id in
+        <foreach collection="list" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <sql id="monitorDeviceCols">
+        device_id,device_name,device_sip_id,device_model,device_state,device_manufacturer,device_ip,device_port,device_node,
+        device_longitude,device_latitude,device_height,district,address,create_time,update_time,building_id,directory_id
+    </sql>
+
+    <select id="getAlarmPolicyDeviceList" parameterType="string" resultType="com.xtxk.recognition.prepare.service.dto.AlarmPolicyConfiguration.AlarmPolicyDeviceDto">
+        SELECT
+            ti.item_name AS eventName,
+            md.device_id deviceId,
+            md.device_name deviceName,
+            md.device_sip_id deviceSipId,
+            md.device_model deviceModel,
+            md.device_state deviceState,
+            md.device_manufacturer deviceManufacturer,
+            md.device_ip deviceIp,
+            md.device_port devicePort,
+            md.device_node deviceNode,
+            md.device_longitude deviceLongitude,
+            md.device_latitude deviceLatitude,
+            md.device_height deviceHeight,
+            md.district,
+            md.address,
+            md.create_time createTime,
+            md.update_time updateTime,
+            md.building_id buildingId,
+            md.directory_id directoryId,
+            md.monitor_building_id monitorBuildingId,
+            md.hk_camera_code hkCameraCode
+        FROM
+            monitor_device md
+                INNER JOIN t_alarm_policy_configuration tc ON md.device_id = tc.resource_id
+                INNER JOIN t_dic_item ti ON tc.event_code = ti.item_code
+        <if test="deviceName !=null and deviceName!=''">
+            where md.device_name like concat('%',#{deviceName},'%')
+        </if>
+    </select>
+
+    <select id="queryResIdByAlgCode" resultType="string">
+        SELECT DISTINCT
+            tc.resource_id
+        FROM
+            t_alarm_policy_configuration tc
+                LEFT JOIN t_loop_alg_dev td ON tc.alg_code = td.alg_code
+                LEFT JOIN t_loop_res_item ti ON td.loop_id = ti.loop_id
+        WHERE
+            tc.alg_code = #{algCode} AND ti.resource_id = tc.resource_id
+    </select>
+</mapper>

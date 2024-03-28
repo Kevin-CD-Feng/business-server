@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "data": [
+    {
+      "bbox": [21,110,75,35],
+      "conf":0.9,
+      "label":"dog"
+    },
+    {
+      "bbox": [21,110,75,35],
+      "conf":0.9,
+      "label":"person",
+      "face_bbox":[21,110,75,35],
+      "face_conf":0.8
+    }
+  ],
+  "params":{
+    "device_id":"",
+    "app_name":"",
+    "timestamp":"",
+    "gaptime":0.001
+  }
+}

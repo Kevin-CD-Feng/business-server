@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.HousingEstateAreaMapper">
+
+    <resultMap id="housingEstateAreaResultMap" type="com.xtxk.cn.entity.HousingEstateAreaPO">
+        <id property="housingEstateAreaId" column="housing_estate_area_id"/>
+        <result property="totalArea" column="total_area"/>
+        <result property="residenceArea" column="residence_area"/>
+        <result property="officeArea" column="office_area"/>
+    </resultMap>
+
+    <sql id="housingEstateAreaCols">
+       housing_estate_area_id,total_area,residence_area,office_area
+    </sql>
+     <select id="getAll" resultMap="housingEstateAreaResultMap">
+         select
+         <include refid="housingEstateAreaCols"/>
+         from housing_estate_area
+     </select>
+    <select id="getBuildingCntAndDoorCnt" resultType="com.xtxk.cn.entity.BuildingCntDto">
+        select
+        count(1)  'buildingCnt',
+        sum(building_door_count) 'doorCnt'
+        from building_info
+    </select>
+</mapper>

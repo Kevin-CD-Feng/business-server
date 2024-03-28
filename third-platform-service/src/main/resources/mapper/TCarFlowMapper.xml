@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xtxk.cn.third.mapper.TCarFlowMapper" >
+  <resultMap id="BaseResultMap" type="com.xtxk.cn.third.entity.car.TCarFlow" >
+    <id column="flow_id" property="flowId" jdbcType="VARCHAR" />
+    <result column="direction" property="direction" jdbcType="VARCHAR" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="car_no" property="carNo" jdbcType="VARCHAR" />
+    <result column="catch_time" property="catchTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    flow_id, direction, device_code, car_no, catch_time, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_car_flow
+    where flow_id = #{flowId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_car_flow
+    where flow_id = #{flowId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xtxk.cn.third.entity.car.TCarFlow" >
+    insert into t_car_flow (flow_id, direction, device_code, car_no, catch_time, create_time)
+    values (#{flowId,jdbcType=VARCHAR}, #{direction,jdbcType=VARCHAR}, #{deviceCode,jdbcType=VARCHAR}, 
+      #{carNo,jdbcType=VARCHAR}, #{catchTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xtxk.cn.third.entity.car.TCarFlow" >
+    insert into t_car_flow
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="flowId != null" >
+        flow_id,
+      </if>
+      <if test="direction != null" >
+        direction,
+      </if>
+      <if test="deviceCode != null" >
+        device_code,
+      </if>
+      <if test="carNo != null" >
+        car_no,
+      </if>
+      <if test="catchTime != null" >
+        catch_time,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="flowId != null" >
+        #{flowId,jdbcType=VARCHAR},
+      </if>
+      <if test="direction != null" >
+        #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceCode != null" >
+        #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="carNo != null" >
+        #{carNo,jdbcType=VARCHAR},
+      </if>
+      <if test="catchTime != null" >
+        #{catchTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xtxk.cn.third.entity.car.TCarFlow" >
+    update t_car_flow
+    <set >
+      <if test="direction != null" >
+        direction = #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceCode != null" >
+        device_code = #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="carNo != null" >
+        car_no = #{carNo,jdbcType=VARCHAR},
+      </if>
+      <if test="catchTime != null" >
+        catch_time = #{catchTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where flow_id = #{flowId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xtxk.cn.third.entity.car.TCarFlow" >
+    update t_car_flow
+    set direction = #{direction,jdbcType=VARCHAR},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      car_no = #{carNo,jdbcType=VARCHAR},
+      catch_time = #{catchTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where flow_id = #{flowId,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="batchSave" parameterType="list">
+    insert into t_car_flow
+        (flow_id, direction, device_code, car_no, catch_time, create_time)
+    values
+    <foreach collection="list" separator="," item="item">
+      (#{item.direction,jdbcType=VARCHAR}, #{item.deviceCode,jdbcType=VARCHAR},#{item.carNo,jdbcType=VARCHAR},
+       #{item.catchTime,jdbcType=TIMESTAMP}, #{item.createTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,129 @@
+server:
+  port: 9527
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+      enabled: true
+    context-path: /intelligence
+spring:
+  application:
+    name: business-server
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.30.10:3306/intelligence_community?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 123456
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 50MB
+      # 设置总上传的文件大小
+      max-request-size: 100MB
+  jackson:
+    time-zone: GMT+8
+
+
+#是否开启swagger
+swagger:
+  enable: true
+
+#mybstis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    #mybatis输出sql语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+#平台接口对接 通过运营监控平台 设备管理 设备归属 查询接口 获取directoryId  nodeId
+third:
+  openVoneURL: http://19.55.10.23:31084/DataApiService
+  #平台不校验token
+  operatorToken: digitalScreen
+  #设备所在组织机构departmentID
+  directoryId: 2b0891147ff340e5b0224a8040946a57
+  #gb设备端口
+  gbDevicePort: 31075
+  #非gb设备端口
+  nonGbDevicePort: 31072
+  #node节点id
+  nodeId: 3d21b83968374d18b490048445c6fd1b
+  queryTypes: SIPEncoder,SIPDecoder,MeetingTerminal,XTMeetingTerminal,HWMeetingTerminal,GBSIPEncoder,OnvifEncoder,GBSIPNVREncoder,GBSystemEncoderReference,GBChannelEncoder,HWConference,SmokeSystem,FireAlarmSystem,CombustibleGasSystem,FireWaterSystem,ElectricalFireSystem,AISystem,HWConfSysTerminal,IPPhone,PSTNPhone,DHConfSysConf,DHConfSysTerminal,BroadAdapter,RotalElectric,RadarElectric,SoundLightDev,AntiSniperDev,Fiber,SdSipEncoder,EdgeAdapter
+  #当前登录用户的id
+  userId: e6b5cc3613a84a8798f099a71482af00
+
+#调度系统
+scheduling:
+  #调度系统url
+  baseUrl: http://10.40.63.3:9528/
+  algorithm:
+    open: /algorithm/modify
+    close: /algorithm/invalid
+  identify:
+    open: /algorithm/enable
+    close: /algorithm/disable
+  # 多个值逗号分隔
+  keys: bbox
+  carConf: 0.6
+  personConf: 0.6
+
+minio:
+  endpoint: http://10.79.76.104:9001
+  accessKey: admin
+  secretKey: Xtxk_02787179095
+  bucketName: filebucket
+
+#app系统
+app:
+  messageUrl: http://10.40.63.3:9529/app/message/receive
+
+statusMonitorWeb:
+  url: http://19.55.10.23:31084/DataApiService
+  #平台不校验token
+  token: StatusMonitorWebService
+  #通过运营管理平台获取 小区下 物业组织机构
+  departmentId: 2b0891147ff340e5b0224a8040946a57
+
+#文件上传 实际根目录
+uploadFileBasePath: c:\\
+
+#上传的文件所在服务器的ip
+fileServicePath: http://10.79.76.104/intelligence/
+
+
+logging:
+  config: classpath:logback.xml
+  level:
+    root: info
+    sql: info
+    com.xtxk.cn.controller: info
+
+#数据中台-人流量数据
+middleData:
+  url: http://znhmj-zhgl.tlm.pcep.cloud/znhmj_zhgl/smartACSController/commonQueryService
+  jwt: eyJhbGciOiJSUzI1NiJ9.eyJsb2dpbl9uYW1lIjoiVDA2MTQzMjIiLCJ1c2VyX2lkIjoicTZ4OHg0aW42dTRyOGk0YXB1d29oaHk5Iiwic2NvcGUiOlsib3BlbmlkIl0sIm9yZ2FuaXphdGlvbiI6Ik9SR0FUTDExMDAwNDU2MiIsImlzcyI6ImEzNmMzMDQ5YjM2MjQ5YTNjOWY4ODkxY2IxMjcyNDNjIiwiZXhwIjoxNzA0NDQzOTEwLCJkaXNwbGF5X25hbWUiOiLmnY7lhbblpKkiLCJyZWdpb24iOiJUTCIsImlhdCI6MTcwMTg1MTkxMH0.bpTSwN23DF61bqn-LfZpSNm8sNck77l14rNLiIh2BaLEBdovpYaafKU-zuAkQzdx3Js3ZbV6l8kzNHS4G-yvWnctvV0bIdBEdRfYwUORv3YyzwQtUdebvr51rpFCadPcBCe6WkeVD4bdnFMUgmB6m4FhxBn8004_zTTNeFwsASYK1NGPkrTS-2gxJ12YnAkvQpxFYwdgeH8GhG0Pc8-PDsx-RDetBD63e_DAsUfyy75ahDES5gOi3yvygjtZ6BjwyG7sCioejUxxXL7QyyvHglQqXpvzWOshj-30VwD5sLj0pm-4CI_hzP9bPMQOPuHvT-hY0TsMBy4Qm7GR4lh_Yw
+  proxyIp: 172.16.0.207
+  proxyPort: 8080
+
+#富士智能-车流量数据
+car:
+  inUrl: http://10.79.76.54:60009/api/InVehicleRecord/getbycustom
+  outUrl: http://10.79.76.54:60009/api/OutVehicle/getbycustom
+  pagesize: 9999
+
+#小区住户图片
+photoPath: /intelligence/personPhotos/
+
+# 录像获取路径
+record:
+  downloadUrl: http://10.79.25.55:32090/control/downloadrecord #录像下载地址
+  fromTimeDelay: 30 #起始时间前移（单位秒）
+  toTimeDelay: 0 #截至时间后移（单位秒）
+  uploadDelay: 2 #视频截取上传间隔时间（单位分钟）
+
+# 海康平台
+hk:
+  host: 127.0.0.1
+  appKey: 123
+  appSecret: 456

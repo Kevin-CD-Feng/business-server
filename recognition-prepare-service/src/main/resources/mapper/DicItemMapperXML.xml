@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.recognition.prepare.service.mapper.DicItemMapper">
+    <insert id="batchAdd" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=";">
+            insert into t_dic_item (`dic_id`, `item_code`,`item_name`,`item_desc`,`item_parent_code`,`deleted`,`enable`)
+            values (#{item.dicId},#{item.itemCode},#{item.itemName},#{item.itemDesc},#{item.itemParentCode},#{item.deleted},#{item.enable})
+        </foreach>
+    </insert>
+
+    <select id="checkItemCodeUnique" resultType="java.lang.String">
+        SELECT
+            item_code
+        FROM
+            t_dic_item
+        WHERE
+            item_code = #{itemCode}
+            and deleted = 0
+    </select>
+
+    <select id="queryDicItemList" resultType="com.xtxk.recognition.prepare.service.entity.DicItem">
+      SELECT
+            i.item_code AS itemCode,
+            i.item_name AS itemName
+        FROM
+            t_dic_item i
+            INNER JOIN t_dic t ON t.id = i.dic_id
+            AND t.deleted = 0
+        WHERE
+            t.dic_code = #{dicCode}
+            and i.deleted=0
+            and i.enable=0
+    </select>
+
+    <select id="queryByItemParentCode" resultType="com.xtxk.recognition.prepare.service.entity.DicItem">
+        SELECT
+            item_code AS itemCode,
+            item_name AS itemName
+        FROM
+            t_dic_item
+        WHERE
+            item_parent_code = #{itemParentCode}
+            AND deleted = 0
+            AND `enable` = 0
+    </select>
+
+    <select id="queryDicItemListByDicCode" resultType="com.xtxk.recognition.prepare.service.entity.DicItem">
+        SELECT
+            d.id AS id,
+            d.item_desc AS itemDesc,
+            d.item_code as itemCode,
+            d.item_name as itemName,
+            d.item_parent_code as itemParentCode
+        FROM
+            t_dic_item d inner join t_dic t on t.id=d.dic_id and t.deleted=0
+        WHERE
+            t.dic_code = #{dicCode}
+            AND d.deleted = 0
+            AND d.`enable` = 0
+    </select>
+
+    <select id="queryItemParentCodeByItemCode" resultType="java.lang.String">
+        select
+        item_parent_code
+        from
+        t_dic_item
+        where
+        item_code = #{itemCode}
+        and deleted=0
+        and enable=0
+    </select>
+
+    <select id="queryItemNameByItemCode" resultType="java.lang.String">
+        select
+        item_name
+        from
+        t_dic_item
+        where
+        item_code = #{itemCode}
+        and deleted=0
+        and enable=0
+    </select>
+
+    <select id="queryDicItemListByDicId" resultType="com.xtxk.recognition.prepare.service.entity.DicItem">
+        SELECT
+            id AS id,
+            item_desc AS itemDesc,
+            item_code as itemCode,
+            item_name as itemName,
+            enable as enable
+        FROM
+            t_dic_item
+        WHERE
+            dic_id = #{dicId}
+            AND deleted = 0
+    </select>
+
+
+    <select id="queryDicItemListByItemCodes" resultType="com.xtxk.recognition.prepare.service.entity.DicItem">
+        select *
+        from t_dic_item
+        where
+        1=1
+        <foreach collection="itemCodes" open="and item_parent_code in(" close=")" item="itemCode" separator=",">
+            #{itemCode}
+        </foreach>
+        and deleted=0
+        and enable=0
+    </select>
+
+    <update id="deleteByItemCodes">
+          update t_dic_item
+          set deleted = 1
+          where
+          1=1
+        <foreach collection="itemCodes" open="and item_code in(" close=")" item="itemCode" separator=",">
+            #{itemCode}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateByIds">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update t_dic_item
+            <set>
+                <if test="item.itemDesc != null and item.itemDesc != ''">
+                    item_desc = #{item.itemDesc},
+                </if>
+                <if test="item.enable != null">
+                    enable = #{item.enable},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="getAll" resultType="com.xtxk.recognition.prepare.service.entity.DicItem">
+        select item_code as itemCode,item_name as itemName
+        from t_dic_item
+        where deleted=0 and enable=0
+    </select>
+
+    <select id="queryEventDictItem" resultType="com.xtxk.recognition.prepare.service.dto.dic.EventDictItemDto">
+        select
+        item.item_parent_code as itemParentCode,
+        item.item_code as itemCode,
+        item.item_name as itemName,
+        item.enable as enable from t_dic dic
+        inner join t_dic_item item on dic.id = item.dic_id
+        where dic.dic_code='alarm_event' and item.enable=0
+    </select>
+
+</mapper>

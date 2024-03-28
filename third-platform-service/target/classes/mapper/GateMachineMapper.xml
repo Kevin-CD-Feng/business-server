@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xtxk.cn.third.mapper.GateMachineMapper" >
+  <resultMap id="BaseResultMap" type="com.xtxk.cn.third.entity.gate.GateMachine" >
+    <id column="gate_machine_id" property="gateMachineId" jdbcType="INTEGER" />
+    <result column="gate_machine_name" property="gateMachineName" jdbcType="VARCHAR" />
+    <result column="duty_phone" property="dutyPhone" jdbcType="VARCHAR" />
+    <result column="district" property="district" jdbcType="VARCHAR" />
+    <result column="gate_machine_longitude" property="gateMachineLongitude" jdbcType="DECIMAL" />
+    <result column="gate_machine_latitude" property="gateMachineLatitude" jdbcType="DECIMAL" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="gate_state" property="gateState" jdbcType="INTEGER" />
+    <result column="source_id" property="sourceId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    gate_machine_id, gate_machine_name, duty_phone, district, gate_machine_longitude, 
+    gate_machine_latitude, address, create_time, update_time, gate_state, source_id
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from gate_machine
+    where gate_machine_id = #{gateMachineId,jdbcType=INTEGER}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from gate_machine
+    where gate_machine_id = #{gateMachineId,jdbcType=INTEGER}
+  </delete>
+
+
+  <insert id="insert" parameterType="com.xtxk.cn.third.entity.gate.GateMachine" >
+    insert into gate_machine
+    (gate_machine_id, gate_machine_name, duty_phone, district, gate_machine_longitude,
+     gate_machine_latitude, address, create_time, update_time, gate_state, source_id)
+    values (#{gateMachineId,jdbcType=INTEGER}, #{gateMachineName,jdbcType=VARCHAR}, #{dutyPhone,jdbcType=VARCHAR}, 
+      #{district,jdbcType=VARCHAR}, #{gateMachineLongitude,jdbcType=DECIMAL}, #{gateMachineLatitude,jdbcType=DECIMAL}, 
+      #{address,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{gateState,jdbcType=INTEGER}, #{sourceId,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.xtxk.cn.third.entity.gate.GateMachine" >
+    insert into gate_machine
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="gateMachineId != null" >
+        gate_machine_id,
+      </if>
+      <if test="gateMachineName != null" >
+        gate_machine_name,
+      </if>
+      <if test="dutyPhone != null" >
+        duty_phone,
+      </if>
+      <if test="district != null" >
+        district,
+      </if>
+      <if test="gateMachineLongitude != null" >
+        gate_machine_longitude,
+      </if>
+      <if test="gateMachineLatitude != null" >
+        gate_machine_latitude,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="gateState != null" >
+        gate_state,
+      </if>
+      <if test="sourceId != null" >
+        source_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="gateMachineId != null" >
+        #{gateMachineId,jdbcType=INTEGER},
+      </if>
+      <if test="gateMachineName != null" >
+        #{gateMachineName,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyPhone != null" >
+        #{dutyPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="gateMachineLongitude != null" >
+        #{gateMachineLongitude,jdbcType=DECIMAL},
+      </if>
+      <if test="gateMachineLatitude != null" >
+        #{gateMachineLatitude,jdbcType=DECIMAL},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gateState != null" >
+        #{gateState,jdbcType=INTEGER},
+      </if>
+      <if test="sourceId != null" >
+        #{sourceId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.xtxk.cn.third.entity.gate.GateMachine" >
+    update gate_machine
+    <set >
+      <if test="gateMachineName != null" >
+        gate_machine_name = #{gateMachineName,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyPhone != null" >
+        duty_phone = #{dutyPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        district = #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="gateMachineLongitude != null" >
+        gate_machine_longitude = #{gateMachineLongitude,jdbcType=DECIMAL},
+      </if>
+      <if test="gateMachineLatitude != null" >
+        gate_machine_latitude = #{gateMachineLatitude,jdbcType=DECIMAL},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gateState != null" >
+        gate_state = #{gateState,jdbcType=INTEGER},
+      </if>
+      <if test="sourceId != null" >
+        source_id = #{sourceId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where gate_machine_id = #{gateMachineId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.xtxk.cn.third.entity.gate.GateMachine" >
+    update gate_machine
+    set gate_machine_name = #{gateMachineName,jdbcType=VARCHAR},
+      duty_phone = #{dutyPhone,jdbcType=VARCHAR},
+      district = #{district,jdbcType=VARCHAR},
+      gate_machine_longitude = #{gateMachineLongitude,jdbcType=DECIMAL},
+      gate_machine_latitude = #{gateMachineLatitude,jdbcType=DECIMAL},
+      address = #{address,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      gate_state = #{gateState,jdbcType=INTEGER},
+      source_id = #{sourceId,jdbcType=VARCHAR}
+    where gate_machine_id = #{gateMachineId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gate_machine
+  </select>
+
+
+  <insert id="batchSave" parameterType="list">
+    insert into gate_machine
+    (gate_machine_name, duty_phone,district, gate_machine_longitude, gate_machine_latitude,
+     address, create_time, update_time, gate_state, source_id)
+    values
+    <foreach collection="list" separator="," item="item">
+      (#{item.gateMachineName,jdbcType=VARCHAR}, #{item.dutyPhone,jdbcType=VARCHAR},#{item.district,jdbcType=VARCHAR},
+      #{item.gateMachineLongitude,jdbcType=DECIMAL}, #{item.gateMachineLatitude,jdbcType=DECIMAL},
+      #{item.address,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.gateState,jdbcType=INTEGER}, #{item.sourceId,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <update id="updateBatchSave" parameterType="list">
+    update gate_machine
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="gate_machine_name = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.gateMachineName!=null and item.gateMachineName!=''">
+            where gate_machine_id = #{item.gateMachineId} then #{item.gateMachineName}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="duty_phone = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.dutyPhone!=null and item.dutyPhone!=''">
+            where gate_machine_id = #{item.gateMachineId} then #{item.dutyPhone}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="district = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.district!=null and item.district!=''">
+            where gate_machine_id = #{item.gateMachineId} then #{item.district}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="gate_machine_longitude = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.gateMachineLongitude!=null">
+            where gate_machine_id = #{item.gateMachineId} then #{item.gateMachineLongitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="gate_machine_latitude = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.gateMachineLatitude!=null">
+            where gate_machine_id = #{item.gateMachineId} then #{item.gateMachineLatitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.address!=null and item.address!=''">
+            where gate_machine_id = #{item.gateMachineId} then #{item.address}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.updateTime!=null">
+            where gate_machine_id = #{item.gateMachineId} then #{item.updateTime}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where gate_machine_id in
+    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+      #{item.gateMachineId}
+    </foreach>
+  </update>
+
+  <delete id="deleteByIds" parameterType="list">
+    delete from gate_machine
+    where gate_machine_id in
+    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+      #{item.gateMachineId}
+    </foreach>
+  </delete>
+
+
+</mapper>

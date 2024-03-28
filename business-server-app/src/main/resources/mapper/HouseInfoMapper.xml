@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xtxk.cn.mapper.HouseInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.xtxk.cn.entity.HouseInfo" >
+    <id column="house_id" property="houseId" jdbcType="INTEGER" />
+    <result column="build_id" property="buildId" jdbcType="INTEGER" />
+    <result column="house_code" property="houseCode" jdbcType="VARCHAR" />
+    <result column="house_nature" property="houseNature" jdbcType="VARCHAR" />
+    <result column="house_area" property="houseArea" jdbcType="DOUBLE" />
+    <result column="contacts" property="contacts" jdbcType="VARCHAR" />
+    <result column="telphone" property="telphone" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="DATE" />
+    <result column="end_time" property="endTime" jdbcType="DATE" />
+    <result column="lake_house_id" property="lakeHouseId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    house_id, build_id, house_code, house_nature, house_area, contacts, telphone, start_time, 
+    end_time, lake_house_id, create_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from house_info
+    where house_id = #{houseId,jdbcType=INTEGER}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from house_info
+    where house_id = #{houseId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.xtxk.cn.entity.HouseInfo" >
+    insert into house_info (house_id, build_id, house_code, 
+      house_nature, house_area, contacts, 
+      telphone, start_time, end_time, 
+      lake_house_id, create_time, update_time
+      )
+    values (#{houseId,jdbcType=INTEGER}, #{buildId,jdbcType=INTEGER}, #{houseCode,jdbcType=VARCHAR}, 
+      #{houseNature,jdbcType=VARCHAR}, #{houseArea,jdbcType=DOUBLE}, #{contacts,jdbcType=VARCHAR}, 
+      #{telphone,jdbcType=VARCHAR}, #{startTime,jdbcType=DATE}, #{endTime,jdbcType=DATE}, 
+      #{lakeHouseId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.xtxk.cn.entity.HouseInfo" >
+    insert into house_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="houseId != null" >
+        house_id,
+      </if>
+      <if test="buildId != null" >
+        build_id,
+      </if>
+      <if test="houseCode != null" >
+        house_code,
+      </if>
+      <if test="houseNature != null" >
+        house_nature,
+      </if>
+      <if test="houseArea != null" >
+        house_area,
+      </if>
+      <if test="contacts != null" >
+        contacts,
+      </if>
+      <if test="telphone != null" >
+        telphone,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="lakeHouseId != null" >
+        lake_house_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="houseId != null" >
+        #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="buildId != null" >
+        #{buildId,jdbcType=INTEGER},
+      </if>
+      <if test="houseCode != null" >
+        #{houseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="houseNature != null" >
+        #{houseNature,jdbcType=VARCHAR},
+      </if>
+      <if test="houseArea != null" >
+        #{houseArea,jdbcType=DOUBLE},
+      </if>
+      <if test="contacts != null" >
+        #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="telphone != null" >
+        #{telphone,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=DATE},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=DATE},
+      </if>
+      <if test="lakeHouseId != null" >
+        #{lakeHouseId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.xtxk.cn.entity.HouseInfo" >
+    update house_info
+    <set >
+      <if test="buildId != null" >
+        build_id = #{buildId,jdbcType=INTEGER},
+      </if>
+      <if test="houseCode != null" >
+        house_code = #{houseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="houseNature != null" >
+        house_nature = #{houseNature,jdbcType=VARCHAR},
+      </if>
+      <if test="houseArea != null" >
+        house_area = #{houseArea,jdbcType=DOUBLE},
+      </if>
+      <if test="contacts != null" >
+        contacts = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="telphone != null" >
+        telphone = #{telphone,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=DATE},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=DATE},
+      </if>
+      <if test="lakeHouseId != null" >
+        lake_house_id = #{lakeHouseId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where house_id = #{houseId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.xtxk.cn.entity.HouseInfo" >
+    update house_info
+    set build_id = #{buildId,jdbcType=INTEGER},
+      house_code = #{houseCode,jdbcType=VARCHAR},
+      house_nature = #{houseNature,jdbcType=VARCHAR},
+      house_area = #{houseArea,jdbcType=DOUBLE},
+      contacts = #{contacts,jdbcType=VARCHAR},
+      telphone = #{telphone,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=DATE},
+      end_time = #{endTime,jdbcType=DATE},
+      lake_house_id = #{lakeHouseId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where house_id = #{houseId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectPageList" parameterType="com.xtxk.cn.dto.build.HouseParams" resultType="com.xtxk.cn.dto.build.HouseVo">
+    select
+      h.house_id houseId,
+      h.house_code houseCode,
+      h.house_nature houseNature,
+      h.house_area houseArea,
+      b.building_id buildId,
+      b.building_number buildNumber,
+      b.building_floor_count buildFloor,
+      b.building_name buildName,
+      b.district buildDistrict
+    from
+    house_info h
+    join building_info b on h.build_id = b.building_id
+    <where>
+      <if test="houseParams.area!=null and houseParams.area!=''">
+        b.district = #{houseParams.area}
+      </if>
+      <if test="houseParams.buildId!=null">
+        and b.building_id = #{houseParams.buildId}
+      </if>
+      <if test="houseParams.houseType!=null and houseParams.houseType!=''">
+        and h.house_nature = #{houseParams.houseType}
+      </if>
+      <if test="houseParams.keyWord!=null and houseParams.keyWord!=''">
+        and h.house_code like concat('%',#{houseParams.keyWord},'%')
+      </if>
+    </where>
+    order by h.create_time desc
+  </select>
+
+</mapper>

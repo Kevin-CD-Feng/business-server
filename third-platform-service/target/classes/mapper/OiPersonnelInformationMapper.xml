@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xtxk.cn.third.mapper.OiPersonnelInformationMapper">
+    <resultMap id="BaseResultMap" type="com.xtxk.cn.third.entity.user.OiPersonnelInformation">
+        <id column="person_id" property="PERSON_ID" jdbcType="VARCHAR"/>
+        <result column="org_id" property="ORG_ID" jdbcType="VARCHAR"/>
+        <result column="name" property="NAME" jdbcType="VARCHAR"/>
+        <result column="id_number" property="ID_NUMBER" jdbcType="VARCHAR"/>
+        <result column="sex" property="SEX" jdbcType="VARCHAR"/>
+        <result column="birthday" property="BIRTHDAY" jdbcType="TIMESTAMP"/>
+        <result column="nation" property="NATION" jdbcType="VARCHAR"/>
+        <result column="native_place" property="NATIVE_PLACE" jdbcType="VARCHAR"/>
+        <result column="blood_type" property="BLOOD_TYPE" jdbcType="VARCHAR"/>
+        <result column="birthplace" property="BIRTHPLACE" jdbcType="VARCHAR"/>
+        <result column="name_spelling" property="NAME_SPELLING" jdbcType="VARCHAR"/>
+        <result column="name_full_reason" property="NAME_FULL_PINYIN" jdbcType="VARCHAR"/>
+        <result column="cancel_reason" property="CANCEL_REASON" jdbcType="VARCHAR"/>
+        <result column="region" property="REGION" jdbcType="VARCHAR"/>
+        <result column="current_state" property="CURRENT_STATE" jdbcType="VARCHAR"/>
+        <result column="remarks" property="REMARKS" jdbcType="VARCHAR"/>
+        <result column="data_region" property="DATA_REGION" jdbcType="VARCHAR"/>
+        <result column="bsflag" property="BSFLAG" jdbcType="INTEGER"/>
+        <result column="create_date" property="CREATE_DATE" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="UPDATE_DATE" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    person_id, org_id, name, id_number, sex, birthday, nation, native_place, blood_type,
+    birthplace, name_spelling, name_full_reason, cancel_reason, region, current_state, 
+    remarks, data_region, bsflag,create_date , update_date
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from oil_personnel_information
+        where person_id = #{PERSON_ID,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from oil_personnel_information
+        where person_id = #{PERSON_ID,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.xtxk.cn.third.entity.user.OiPersonnelInformation">
+        insert into oil_personnel_information
+        (person_id, org_id, name, id_number, sex, birthday,
+         nation, native_place, blood_type, birthplace, name_spelling, name_full_reason,
+         cancel_reason, region, current_state, remarks, data_region, bsflag,create_date, update_date)
+        values (#{PERSON_ID,jdbcType=VARCHAR}, #{ORG_ID,jdbcType=VARCHAR}, #{NAME,jdbcType=VARCHAR},
+                #{ID_NUMBER,jdbcType=VARCHAR}, #{SEX,jdbcType=VARCHAR}, #{BIRTHDAY,jdbcType=TIMESTAMP},
+                #{NATION,jdbcType=VARCHAR}, #{NATIVE_PLACE,jdbcType=VARCHAR}, #{BLOOD_TYPE,jdbcType=VARCHAR},
+                #{BIRTHPLACE,jdbcType=VARCHAR}, #{NAME_SPELLING,jdbcType=VARCHAR}, #{NAME_SPELLING,jdbcType=VARCHAR},
+                #{CANCEL_REASON,jdbcType=VARCHAR}, #{REGION,jdbcType=VARCHAR}, #{CURRENT_STATE,jdbcType=VARCHAR},
+                #{REMARKS,jdbcType=VARCHAR}, #{DATA_REGION,jdbcType=VARCHAR}, #{BSFLAG,jdbcType=INTEGER},
+                #{CREATE_DATE,jdbcType=TIMESTAMP}, #{UPDATE_DATE,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xtxk.cn.third.entity.user.OiPersonnelInformation">
+        insert into oil_personnel_information
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="PERSON_ID != null">
+                person_id,
+            </if>
+            <if test="ORG_ID != null">
+                org_id,
+            </if>
+            <if test="NAME != null">
+                name,
+            </if>
+            <if test="ID_NUMBER != null">
+                id_number,
+            </if>
+            <if test="SEX != null">
+                sex,
+            </if>
+            <if test="BIRTHDAY != null">
+                birthday,
+            </if>
+            <if test="NATION != null">
+                nation,
+            </if>
+            <if test="NATIVE_PLACE != null">
+                native_place,
+            </if>
+            <if test="BLOOD_TYPE != null">
+                blood_type,
+            </if>
+            <if test="BIRTHPLACE != null">
+                birthplace,
+            </if>
+            <if test="NAME_SPELLING != null">
+                name_spelling,
+            </if>
+            <if test="NAME_FULL_PINYIN != null">
+                name_full_reason,
+            </if>
+            <if test="CANCEL_REASON != null">
+                cancel_reason,
+            </if>
+            <if test="REGION != null">
+                region,
+            </if>
+            <if test="CURRENT_STATE != null">
+                current_state,
+            </if>
+            <if test="REMARKS != null">
+                remarks,
+            </if>
+            <if test="DATA_REGION != null">
+                data_region,
+            </if>
+            <if test="BSFLAG != null">
+                bsflag,
+            </if>
+            <if test="CREATE_DATE != null">
+                create_date,
+            </if>
+            <if test="UPDATE_DATE != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="PERSON_ID != null">
+                #{PERSON_ID,jdbcType=VARCHAR},
+            </if>
+            <if test="ORG_ID != null">
+                #{ORG_ID,jdbcType=VARCHAR},
+            </if>
+            <if test="NAME != null">
+                #{NAME,jdbcType=VARCHAR},
+            </if>
+            <if test="ID_NUMBER != null">
+                #{ID_NUMBER,jdbcType=VARCHAR},
+            </if>
+            <if test="SEX != null">
+                #{SEX,jdbcType=VARCHAR},
+            </if>
+            <if test="BIRTHDAY != null">
+                #{BIRTHDAY,jdbcType=TIMESTAMP},
+            </if>
+            <if test="NATION != null">
+                #{NATION,jdbcType=VARCHAR},
+            </if>
+            <if test="NATIVE_PLACE != null">
+                #{NATIVE_PLACE,jdbcType=VARCHAR},
+            </if>
+            <if test="BLOOD_TYPE != null">
+                #{BLOOD_TYPE,jdbcType=VARCHAR},
+            </if>
+            <if test="BIRTHPLACE != null">
+                #{BIRTHPLACE,jdbcType=VARCHAR},
+            </if>
+            <if test="NAME_SPELLING != null">
+                #{NAME_SPELLING,jdbcType=VARCHAR},
+            </if>
+            <if test="NAME_FULL_PINYIN != null">
+                #{NAME_FULL_PINYIN,jdbcType=VARCHAR},
+            </if>
+            <if test="CANCEL_REASON != null">
+                #{CANCEL_REASON,jdbcType=VARCHAR},
+            </if>
+            <if test="REGION != null">
+                #{REGION,jdbcType=VARCHAR},
+            </if>
+            <if test="CURRENT_STATE != null">
+                #{CURRENT_STATE,jdbcType=VARCHAR},
+            </if>
+            <if test="REMARKS != null">
+                #{REMARKS,jdbcType=VARCHAR},
+            </if>
+            <if test="DATA_REGION != null">
+                #{DATA_REGION,jdbcType=VARCHAR},
+            </if>
+            <if test="BSFLAG != null">
+                #{BSFLAG,jdbcType=INTEGER},
+            </if>
+            <if test="CREATE_DATE != null">
+                #{CREATE_DATE,jdbcType=TIMESTAMP},
+            </if>
+            <if test="UPDATE_DATE != null">
+                #{UPDATE_DATE,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+         on duplicate key update
+         org_id           = #{ORG_ID,jdbcType=VARCHAR},
+         name             = #{NAME,jdbcType=VARCHAR},
+         id_number        = #{ID_NUMBER,jdbcType=VARCHAR},
+         sex              = #{SEX,jdbcType=VARCHAR},
+         birthday         = #{BIRTHDAY,jdbcType=TIMESTAMP},
+         nation           = #{NATION,jdbcType=VARCHAR},
+         native_place     = #{NATIVE_PLACE,jdbcType=VARCHAR},
+         blood_type       = #{BLOOD_TYPE,jdbcType=VARCHAR},
+         birthplace       = #{BIRTHPLACE,jdbcType=VARCHAR},
+         name_spelling    = #{NAME_SPELLING,jdbcType=VARCHAR},
+         name_full_reason = #{NAME_FULL_PINYIN,jdbcType=VARCHAR},
+         cancel_reason    = #{CANCEL_REASON,jdbcType=VARCHAR},
+         region           = #{REGION,jdbcType=VARCHAR},
+         current_state    = #{CURRENT_STATE,jdbcType=VARCHAR},
+         remarks          = #{REMARKS,jdbcType=VARCHAR},
+         data_region      = #{DATA_REGION,jdbcType=VARCHAR},
+         bsflag           = #{BSFLAG,jdbcType=INTEGER},
+         create_date      = #{CREATE_DATE,jdbcType=TIMESTAMP},
+         update_date      = #{UPDATE_DATE,jdbcType=TIMESTAMP}
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xtxk.cn.third.entity.user.OiPersonnelInformation">
+        update oil_personnel_information
+        <set>
+            <if test="ORG_ID != null">
+                org_id = #{ORG_ID,jdbcType=VARCHAR},
+            </if>
+            <if test="NAME != null">
+                name = #{NAME,jdbcType=VARCHAR},
+            </if>
+            <if test="ID_NUMBER != null">
+                id_number = #{ID_NUMBER,jdbcType=VARCHAR},
+            </if>
+            <if test="SEX != null">
+                sex = #{SEX,jdbcType=VARCHAR},
+            </if>
+            <if test="BIRTHDAY != null">
+                birthday = #{BIRTHDAY,jdbcType=TIMESTAMP},
+            </if>
+            <if test="NATION != null">
+                nation = #{NATION,jdbcType=VARCHAR},
+            </if>
+            <if test="NATIVE_PLACE != null">
+                native_place = #{NATIVE_PLACE,jdbcType=VARCHAR},
+            </if>
+            <if test="BLOOD_TYPE != null">
+                blood_type = #{BLOOD_TYPE,jdbcType=VARCHAR},
+            </if>
+            <if test="BIRTHPLACE != null">
+                birthplace = #{BIRTHPLACE,jdbcType=VARCHAR},
+            </if>
+            <if test="NAME_SPELLING != null">
+                name_spelling = #{NAME_SPELLING,jdbcType=VARCHAR},
+            </if>
+            <if test="NAME_FULL_PINYIN != null">
+                name_full_reason = #{NAME_FULL_PINYIN,jdbcType=VARCHAR},
+            </if>
+            <if test="CANCEL_REASON != null">
+                cancel_reason = #{CANCEL_REASON,jdbcType=VARCHAR},
+            </if>
+            <if test="REGION != null">
+                region = #{REGION,jdbcType=VARCHAR},
+            </if>
+            <if test="CURRENT_STATE != null">
+                current_state = #{CURRENT_STATE,jdbcType=VARCHAR},
+            </if>
+            <if test="REMARKS != null">
+                remarks = #{REMARKS,jdbcType=VARCHAR},
+            </if>
+            <if test="DATA_REGION != null">
+                data_region = #{DATA_REGION,jdbcType=VARCHAR},
+            </if>
+            <if test="BSFLAG != null">
+                bsflag = #{BSFLAG,jdbcType=INTEGER},
+            </if>
+            <if test="CREATE_DATE != null">
+                create_date = #{CREATE_DATE,jdbcType=TIMESTAMP},
+            </if>
+            <if test="UPDATE_DATE != null">
+                update_date = #{UPDATE_DATE,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where person_id = #{PERSON_ID,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xtxk.cn.third.entity.user.OiPersonnelInformation">
+        update oil_personnel_information
+        set org_id           = #{ORG_ID,jdbcType=VARCHAR},
+            name             = #{NAME,jdbcType=VARCHAR},
+            id_number        = #{ID_NUMBER,jdbcType=VARCHAR},
+            sex              = #{SEX,jdbcType=VARCHAR},
+            birthday         = #{BIRTHDAY,jdbcType=TIMESTAMP},
+            nation           = #{NATION,jdbcType=VARCHAR},
+            native_place     = #{NATIVE_PLACE,jdbcType=VARCHAR},
+            blood_type       = #{BLOOD_TYPE,jdbcType=VARCHAR},
+            birthplace       = #{BIRTHPLACE,jdbcType=VARCHAR},
+            name_spelling    = #{NAME_SPELLING,jdbcType=VARCHAR},
+            name_full_reason = #{NAME_FULL_PINYIN,jdbcType=VARCHAR},
+            cancel_reason    = #{CANCEL_REASON,jdbcType=VARCHAR},
+            region           = #{REGION,jdbcType=VARCHAR},
+            current_state    = #{CURRENT_STATE,jdbcType=VARCHAR},
+            remarks          = #{REMARKS,jdbcType=VARCHAR},
+            data_region      = #{DATA_REGION,jdbcType=VARCHAR},
+            bsflag           = #{BSFLAG,jdbcType=INTEGER},
+            create_date      = #{CREATE_DATE,jdbcType=TIMESTAMP},
+            update_date      = #{UPDATE_DATE,jdbcType=TIMESTAMP}
+        where person_id = #{PERSON_ID,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectPersonList" resultType="com.xtxk.cn.third.entity.user.OiPersonnelInformation">
+        select
+            p.person_id as PERSON_ID,
+            p.name      as NAME,
+            p.id_number as ID_NUMBER,
+            dc.dic_name as SEX,
+            p.birthday  as BIRTHDAY,
+            p.bsflag    as BSFLAG
+        from oil_personnel_information p
+        join type_dic_conver dc on p.sex = dc.source_type
+    </select>
+
+    <select id="streamQueryList" resultType="com.xtxk.cn.third.entity.user.OiPersonnelInformation" fetchSize="5000">
+        select
+            p.person_id as PERSON_ID,
+            p.name      as NAME,
+            p.id_number as ID_NUMBER,
+            dc.dic_name as SEX,
+            p.birthday  as BIRTHDAY,
+            p.bsflag    as BSFLAG
+        from oil_personnel_information p
+        join type_dic_conver dc on p.sex = dc.source_type
+    </select>
+</mapper>

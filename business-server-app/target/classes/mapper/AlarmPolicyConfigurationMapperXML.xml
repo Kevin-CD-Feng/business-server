@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.AlarmPolicyConfigurationMapper">
+
+    <!--删除-->
+    <delete id="deleteByResourceId">
+        DELETE FROM t_alarm_policy_configuration
+        WHERE
+        resource_id = #{resourceId}
+    </delete>
+
+    <insert id="insert" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=";">
+            insert into t_alarm_policy_configuration (`resource_id`, `event_code`,`violation_length`,`web_coordinate`,`create_time`,`create_user`)
+            values (#{item.resourceId}, #{item.eventCode},#{item.violationLength}, #{item.webCoordinate}, #{item.createTime},#{item.createUser})
+        </foreach>
+    </insert>
+
+    <select id="list" resultType="com.xtxk.cn.entity.AlarmPolicyConfiguration">
+        SELECT
+        id as id,
+        resource_id as resourceId,
+        event_code as eventCode,
+        violation_length as violationLength,
+        web_coordinate as webCoordinate
+        from t_alarm_policy_configuration
+        where
+        1 = 1
+        AND resource_id = #{resourceId}
+        and deleted = 0
+    </select>
+
+    <delete id="batchDelete">
+        delete from t_alarm_policy_configuration
+        where
+        1=1
+        <foreach collection="list" open="and id in(" close=")" item="item" separator=",">
+            #{item.id,jdbcType=INTEGER}
+        </foreach>
+    </delete>
+
+    <update id="batchUpdate">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update t_alarm_policy_configuration
+            <set>
+                <if test="item.eventCode != null and item.eventCode != ''">
+                    event_code = #{item.eventCode},
+                </if>
+                <if test="item.resourceId != null and item.resourceId != ''">
+                    resource_id = #{item.resourceId},
+                </if>
+                <if test="item.violationLength != null and item.violationLength != ''">
+                    violation_length = #{item.violationLength},
+                </if>
+                <if test="item.webCoordinate != null and item.webCoordinate != ''">
+                    web_coordinate = #{item.webCoordinate},
+                </if>
+                <if test="item.updateTime != null">
+                    update_time = #{item.updateTime},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="queryAll" resultType="com.xtxk.cn.entity.AlarmPolicyConfiguration">
+        SELECT
+        id as id,
+        resource_id as resourceId,
+        event_code as eventCode,
+        violation_length as violationLength,
+        web_coordinate as webCoordinate
+        from t_alarm_policy_configuration
+        where
+        1 = 1
+        and deleted = 0
+    </select>
+    
+    <select id="queryByResourceId" resultType="com.xtxk.cn.entity.AlarmPolicyConfiguration">
+        select * from t_alarm_policy_configuration where resource_id=#{resourceId} and deleted=0
+    </select>
+
+    <select id="queryDevice" resultType="com.xtxk.cn.entity.AlarmPolicyConfiguration">
+        select distinct resource_id as resourceId,d.device_name as eventCode,d.device_sip_id webCoordinate,ifnull(dvr.status,0) deleted
+        from t_alarm_policy_configuration c
+        left join monitor_device d on c.resource_id = d.device_id
+        left join device_video_record dvr on c.resource_id = dvr.device_id
+        where deleted = 0
+    </select>
+
+    <select id="queryById" resultType="com.xtxk.cn.entity.AlarmPolicyConfiguration">
+        select distinct resource_id as resourceId,d.device_name as eventCode,d.device_sip_id webCoordinate
+        from t_alarm_policy_configuration c left join monitor_device d on c.resource_id = d.device_id
+        where deleted = 0 and c.resource_id = #{resourceId}
+    </select>
+</mapper>

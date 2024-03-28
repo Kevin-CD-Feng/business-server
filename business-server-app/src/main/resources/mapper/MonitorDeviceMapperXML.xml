@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.MonitorDeviceMapper">
+
+    <resultMap id="monitorDeviceResultMap" type="com.xtxk.cn.entity.MonitorDevicePO">
+        <id property="deviceId" column="device_id"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="deviceModel" column="device_model"/>
+        <result property="deviceState" column="device_state"/>
+        <result property="deviceManufacturer" column="device_manufacturer"/>
+        <result property="deviceIp" column="device_ip"/>
+        <result property="devicePort" column="device_port"/>
+        <result property="deviceNode" column="device_node"/>
+        <result property="deviceLongitude" column="device_longitude"/>
+        <result property="deviceLatitude" column="device_latitude"/>
+        <result property="deviceHeight" column="device_height"/>
+        <result property="district" column="district"/>
+        <result property="address" column="address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deviceSipId" column="device_sip_id"/>
+        <result property="buildingId" column="building_id"/>
+        <result property="directoryId" column="directory_id"/>
+        <result property="monitorBuildingId" column="monitor_building_id"/>
+        <result property="hkCameraCode" column="hk_camera_code"/>
+    </resultMap>
+
+    <resultMap id="perCarDevCountResultMap" type="com.xtxk.cn.entity.PerCarDevCount">
+        <result property="perRecordCount" column="per_record_count"/>
+        <result property="carRecordCount" column="car_record_count"/>
+        <result property="devRecordCount" column="dev_record_count"/>
+    </resultMap>
+
+    <resultMap id="monitorDeviceDtoResultMap" type="com.xtxk.cn.dto.geogra.MonitorDeviceDto">
+        <result property="district" column="district"/>
+        <collection property="deviceList" ofType="com.xtxk.cn.entity.MonitorDevicePO">
+            <id property="deviceId" column="device_id"/>
+            <result property="deviceName" column="device_name"/>
+            <result property="deviceModel" column="device_model"/>
+            <result property="deviceState" column="device_state"/>
+            <result property="deviceManufacturer" column="device_manufacturer"/>
+            <result property="deviceIp" column="device_ip"/>
+            <result property="devicePort" column="device_port"/>
+            <result property="deviceNode" column="device_node"/>
+            <result property="deviceLongitude" column="device_longitude"/>
+            <result property="deviceLatitude" column="device_latitude"/>
+            <result property="deviceHeight" column="device_height"/>
+            <result property="district" column="district"/>
+            <result property="address" column="address"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
+            <result property="buildingId" column="building_id"/>
+            <result property="directoryId" column="directory_id"/>
+            <result property="monitorBuildingId" column="monitor_building_id"/>
+            <result property="hkCameraCode" column="hk_camera_code"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="getGeograObjDtoResultMap" type="com.xtxk.cn.dto.geogra.GeograObjDto">
+        <id property="id" column="device_id" javaType="string" jdbcType="INTEGER"/>
+        <result property="name" column="device_name"/>
+        <result property="district" column="district"/>
+        <result property="status" column="device_state" javaType="string" jdbcType="INTEGER"/>
+        <result property="longitude" column="device_longitude"/>
+        <result property="latitude" column="device_latitude"/>
+        <result property="height" column="device_height"/>
+        <result property="type" column="type" javaType="string" jdbcType="INTEGER"/>
+        <association property="alarmInfo" javaType="com.xtxk.cn.entity.AlarmInfo">
+            <id property="id" column="id"/>
+            <result property="resourceId" column="resource_id"/>
+            <result property="resourceName" column="resource_name"/>
+            <result property="event" column="event"/>
+            <result property="catchTime" column="catch_time"/>
+            <result property="area" column="area"/>
+            <result property="catchImageUrl" column="catch_image_url"/>
+            <result property="processFlag" column="process_flag"/>
+            <result property="status" column="status"/>
+            <result property="createTime" column="create_time"/>
+            <result property="createUser" column="create_user"/>
+            <result property="updateTime" column="update_time"/>
+            <result property="updateUser" column="update_user"/>
+            <result property="deleted" column="deleted"/>
+            <result property="resourceType" column="resource_type"/>
+            <result property="longitude" column="longitude"/>
+            <result property="latitude" column="latitude"/>
+        </association>
+    </resultMap>
+
+    <sql id="monitorDeviceCols">
+        device_id
+        ,device_name,device_sip_id,device_model,device_state,device_manufacturer,device_ip,device_port,device_node,
+        device_longitude,device_latitude,device_height,district,address,create_time,update_time,building_id,directory_id,monitor_building_id,
+        hk_camera_code
+    </sql>
+
+    <select id="queryByKeyWord" resultMap="monitorDeviceResultMap">
+        select
+        <include refid="monitorDeviceCols"/>
+        from monitor_device
+        <where>
+            <if test="keyWord !=null and keyWord !=''">
+                device_name like concat('%',#{keyWord},'%')
+            </if>
+            <if test="deviceStateName!=null">
+                and device_state =#{deviceStateName}
+            </if>
+            <if test="districtName!=null and districtName!=''">
+                and district = #{districtName}
+            </if>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="com.xtxk.cn.entity.MonitorDevicePO">
+        insert into monitor_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId !=null and deviceId!=''">
+                device_id,
+            </if>
+            <if test="deviceName !=null and deviceName !=''">
+                device_name,
+            </if>
+            <if test="deviceSipId !=null">
+                device_sip_id,
+            </if>
+            <if test="deviceModel !=null and deviceModel !=''">
+                device_model,
+            </if>
+            <if test="deviceState !=null">
+                device_state,
+            </if>
+            <if test="deviceManufacturer !=null and deviceManufacturer !=''">
+                device_manufacturer,
+            </if>
+            <if test="deviceIp !=null and deviceIp !=''">
+                device_ip,
+            </if>
+            <if test="devicePort !=null">
+                device_port,
+            </if>
+            <if test="deviceNode !=null and deviceNode !=''">
+                device_node,
+            </if>
+            <if test="deviceLongitude !=null">
+                device_longitude,
+            </if>
+            <if test="deviceLatitude !=null">
+                device_latitude,
+            </if>
+            <if test="deviceHeight !=null">
+                device_height,
+            </if>
+            <if test="district !=null and district!=''">
+                district,
+            </if>
+            <if test="address !=null and address !=''">
+                address,
+            </if>
+            <if test="createTime !=null">
+                create_time,
+            </if>
+            <if test="updateTime !=null">
+                update_time
+            </if>
+            <if test="directoryId!=null and directoryId !=''">
+                directory_id,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId !=null and deviceId!=''">
+                #{deviceId},
+            </if>
+            <if test="deviceName !=null and deviceName !=''">
+                #{deviceName},
+            </if>
+            <if test="deviceSipId !=null">
+                #{deviceSipId},
+            </if>
+            <if test="deviceModel !=null and deviceModel !=''">
+                #{deviceModel},
+            </if>
+            <if test="deviceState !=null">
+                #{deviceState},
+            </if>
+            <if test="deviceManufacturer !=null and deviceManufacturer !=''">
+                #{deviceManufacturer},
+            </if>
+            <if test="deviceIp !=null and deviceIp !=''">
+                #{deviceIp},
+            </if>
+            <if test="devicePort !=null">
+                #{devicePort},
+            </if>
+            <if test="deviceNode !=null and deviceNode !=''">
+                #{deviceNode},
+            </if>
+            <if test="deviceLongitude !=null">
+                #{deviceLongitude},
+            </if>
+            <if test="deviceLatitude !=null">
+                #{deviceLatitude},
+            </if>
+            <if test="deviceHeight !=null">
+                #{deviceHeight},
+            </if>
+            <if test="district !=null and district!=''">
+                #{district},
+            </if>
+            <if test="address !=null and address !=''">
+                #{address},
+            </if>
+            <if test="createTime !=null">
+                #{createTime},
+            </if>
+            <if test="updateTime !=null">
+                #{updateTime},
+            </if>
+            <if test="directoryId!=null and directoryId !=''">
+                #{directoryId}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.xtxk.cn.entity.MonitorDevicePO">
+        update monitor_device
+        <set>
+            <if test="deviceName !=null and deviceName !=''">
+                device_name=#{deviceName},
+            </if>
+            <if test="deviceSipId !=null">
+                device_sip_id=#{deviceSipId},
+            </if>
+            <if test="deviceModel !=null and deviceModel !=''">
+                device_model=#{deviceModel},
+            </if>
+            <if test="deviceState !=null">
+                device_state=#{deviceState},
+            </if>
+            <if test="deviceManufacturer !=null and deviceManufacturer !=''">
+                device_manufacturer=#{deviceManufacturer},
+            </if>
+            <if test="deviceIp !=null and deviceIp !=''">
+                device_ip=#{deviceIp},
+            </if>
+            <if test="devicePort !=null">
+                device_port=#{devicePort},
+            </if>
+            <if test="deviceNode !=null and deviceNode !=''">
+                device_node=#{deviceNode},
+            </if>
+            <if test="deviceLongitude !=null">
+                device_longitude=#{deviceLongitude},
+            </if>
+            <if test="deviceLatitude !=null">
+                device_latitude=#{deviceLatitude},
+            </if>
+            <if test="deviceHeight !=null">
+                device_height=#{deviceHeight},
+            </if>
+            <if test="district !=null and district!=''">
+                district=#{district},
+            </if>
+            <if test="address !=null and address !=''">
+                address=#{address},
+            </if>
+            <if test="buildingId!=null and buildingId !=''">
+                building_id=#{buildingId},
+            </if>
+            <if test="directoryId!=null and directoryId !=''">
+                directory_id=#{directoryId},
+            </if>
+            <if test="monitorBuildingId!=null and monitorBuildingId !=''">
+                monitor_building_id=#{monitorBuildingId},
+            </if>
+            update_time=now()
+        </set>
+        where device_id=#{deviceId}
+    </update>
+
+    <select id="getById" resultMap="monitorDeviceResultMap">
+        select
+        <include refid="monitorDeviceCols"/>
+        from monitor_device
+        where device_id=#{deviceId} limit 1
+    </select>
+
+    <delete id="deleteById">
+        delete
+        from monitor_device
+        where device_id = #{deviceId}
+    </delete>
+
+    <select id="getPerCarDevCount" resultMap="perCarDevCountResultMap">
+        select pi.per_record_count, ci.car_record_count, md.dev_record_count
+        from (select count(1) per_record_count from person_info) pi,
+             (select count(1) car_record_count from car_info) ci,
+             (select count(1) dev_record_count from monitor_device) md
+    </select>
+
+    <select id="getDistrictDevice" resultMap="monitorDeviceDtoResultMap">
+        select md_dis.district, md.*
+        from monitor_device md
+                 join (select DISTINCT district from monitor_device) md_dis
+                      on md.district = md_dis.district
+    </select>
+
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        select count(1)
+        from monitor_device
+    </select>
+
+    <select id="getGeograObjDto" resultMap="getGeograObjDtoResultMap">
+        select md.device_id,
+               md.device_name,
+               md.district,
+               md.device_state,
+               md.device_longitude,
+               md.device_latitude,
+               md.device_height,
+               1 `type`,
+               tai.*
+        from monitor_device md
+                 left join
+             (select MAX(create_time), MAX(id) id, resource_id from t_alarm_info GROUP BY resource_id) ttai
+             on md.device_id = ttai.resource_id
+                 left join t_alarm_info tai
+                           on ttai.id = tai.id;
+    </select>
+
+    <select id="getAllDeviceId" resultType="java.lang.String">
+        select device_id
+        from monitor_device
+    </select>
+
+    <select id="getAll" resultMap="monitorDeviceResultMap">
+        select device_id, device_state
+        from monitor_device
+    </select>
+
+    <update id="batchUpdateState" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            update monitor_device
+            <set>
+                device_state=#{item.deviceState}
+            </set>
+            where device_id=#{item.deviceId}
+        </foreach>
+    </update>
+
+    <select id="getAllList" resultMap="monitorDeviceResultMap">
+        select
+        <include refid="monitorDeviceCols"/>
+        from monitor_device
+    </select>
+
+    <select id="queryDeviceStatus" resultType="com.xtxk.cn.dto.monitor.DeviceStatusRspDto">
+        select sum(case when device_state = 0 then 1 else 0 end) 'online', count(1) 'total', 'device' as 'category'
+        from monitor_device
+        group by device_state
+        UNION ALL
+        select sum(case when gate_state = 0 then 1 else 0 end) 'online', count(1) 'total', 'gate' as 'category'
+        from gate_machine
+        group by gate_state
+    </select>
+
+    <select id="queryDeviceByArea" resultType="com.xtxk.cn.dto.monitor.DeviceCntByAreaRspDto">
+        select count(1) cnt,
+               district areaCode
+        from monitor_device
+        group by district
+    </select>
+
+    <select id="queryDeviceAndGateStatus" resultType="com.xtxk.cn.dto.monitor.DeviceAndGateStateRspDto">
+        select device_id as equipId, device_state as equipState, 'device' as type
+        from monitor_device
+        union
+        select gate_machine_id as equipId, gate_state as equipState, 'gate' as type
+        from gate_machine
+    </select>
+
+    <select id="queryAllResInfoForMap" resultType="com.xtxk.cn.dto.monitor.ResInfoForMapRspDto">
+        <if test="category == null or category == '' ">
+            select device_id as resourceId,device_sip_id as resourceSipId,device_name as
+            resourceName,device_longitude as longitude ,device_latitude as latitude,device_state as
+            devState,'device' as category
+            from monitor_device
+            union
+            select gate_machine_id as resourceId,'none' as resourceSipId,gate_machine_name as
+            resourceName,gate_machine_longitude as longitude,gate_machine_latitude as latitude, gate_state as
+            devState,'gate' as category from gate_machine
+            union
+            select building_id as resourceId,'none' as resourceSipId,building_name as
+            resourceName,building_longitude as longitude,building_latitude as latitude,0 as devState,'building' as
+            category from building_info
+        </if>
+        <if test="category == 'device'">
+            select device_id as resourceId,device_sip_id as resourceSipId,device_name as
+            resourceName,device_longitude as longitude ,device_latitude as latitude,device_state as
+            devState,'device' as category
+            from monitor_device
+        </if>
+        <if test="category == 'building'">
+            select building_id as resourceId,'none' as resourceSipId,building_name as
+            resourceName,building_longitude as longitude,building_latitude as latitude,0 as devState,'building' as
+            category from building_info
+        </if>
+        <if test="category == 'gate'">
+            select gate_machine_id as resourceId,'none' as resourceSipId,gate_machine_name as
+            resourceName,gate_machine_longitude as longitude,gate_machine_latitude as latitude, gate_state as
+            devState,'gate' as category from gate_machine
+        </if>
+    </select>
+
+    <select id="getDeviceListByDirectoryId" resultMap="monitorDeviceResultMap">
+        select
+        <include refid="monitorDeviceCols"/>
+        from monitor_device
+        where directory_id=#{directoryId}
+        order by device_name
+    </select>
+
+    <select id="getDirectoryDeviceCount" resultType="java.lang.Integer">
+        select count(*)
+        from monitor_device
+        where directory_id = #{directoryId}
+    </select>
+
+    <select id="searchDeviceListByName" parameterType="string" resultMap="monitorDeviceResultMap">
+        select
+        <include refid="monitorDeviceCols"/>
+        from monitor_device
+        <if test="deviceName !=null and deviceName!=''">
+            where device_name like concat('%',#{deviceName},'%')
+        </if>
+    </select>
+
+    <select id="getSipIdByDeviceId" resultType="string">
+        select device_sip_id deviceSipId
+        from monitor_device
+        where device_id = #{deviceId}
+    </select>
+
+    <select id="getCameraCodeByDeviceId" resultType="string">
+        select hk_camera_code hkCameraCode
+        from monitor_device
+        where device_id = #{deviceId}
+    </select>
+</mapper>

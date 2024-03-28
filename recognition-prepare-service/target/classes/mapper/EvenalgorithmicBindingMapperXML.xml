@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.recognition.prepare.service.mapper.EvenalgorithmicBindingMapper">
+
+    <insert id="insert">
+      INSERT INTO
+        t_event_algorithmic_binding (event_code,event_name,algorithmic_name_code,algorithmic_name,create_time,create_user,deleted)
+        VALUES(#{eventCode},#{eventName},#{algorithmicNameCode},#{algorithmicName},#{createTime},#{createUser},#{deleted})
+    </insert>
+
+    <select id="queryPageList" resultType="com.xtxk.recognition.prepare.service.entity.EvenalgorithmicBinding">
+        SELECT
+        id as id,
+        event_name as eventName,
+        algorithmic_name as algorithmicName
+        from t_event_algorithmic_binding
+        where
+        1 = 1
+        <if test="param.eventName!=null and param.eventName != ''">
+            AND event_name LIKE CONCAT(
+            '%',#{param.eventName},'%')
+        </if>
+        and deleted = 0
+    </select>
+
+    <!--校验eventCode否存在-->
+    <select id="queryById" parameterType="java.lang.Integer" resultType="com.xtxk.recognition.prepare.service.entity.EvenalgorithmicBinding">
+       SELECT
+       id as id,
+       event_code as eventCode,
+       algorithmic_name_code as algorithmicNameCode
+       from t_event_algorithmic_binding
+       WHERE 1 = 1
+             AND id = #{id}
+             and deleted = 0
+    </select>
+
+    <update id="update" parameterType="com.xtxk.recognition.prepare.service.entity.EvenalgorithmicBinding">
+        UPDATE t_event_algorithmic_binding SET
+                event_code=#{param.eventCode},event_name=#{param.eventName},algorithmic_name_code=#{param.algorithmicNameCode},
+                algorithmic_name=#{param.algorithmicName},update_time=#{param.updateTime},update_user=#{param.updateUser}
+        WHERE
+            id = #{param.id}
+            and deleted = 0
+    </update>
+
+    <update id="delete">
+        UPDATE t_event_algorithmic_binding SET
+        deleted=1,update_time=#{updateTime},update_user=#{updateUser}
+        WHERE
+        deleted = 0
+        and   id <foreach collection="ids" item="id" open="in(" close=")" separator=",">#{id}</foreach>
+
+    </update>
+
+    <!--校验eventCode否存在-->
+    <select id="checkExist" resultType="com.xtxk.recognition.prepare.service.entity.EvenalgorithmicBinding">
+       SELECT
+       id as id,
+       event_code as eventCode,
+       algorithmic_name_code as algorithmicNameCode
+       from t_event_algorithmic_binding
+       WHERE 1 = 1
+             AND event_code = #{eventCode}
+             and algorithmic_name_code = #{algorithmicNameCode}
+             and deleted = 0
+    </select>
+
+    <select id="queryAlgorithmicCodeByEventCode" resultType="java.lang.String">
+        select
+        algorithmic_name_code
+        from t_event_algorithmic_binding
+        WHERE 1 = 1
+             AND event_code = #{eventCode}
+             and deleted = 0
+    </select>
+
+    <select id="queryEventAlgBindingAll" resultType="com.xtxk.recognition.prepare.service.entity.EvenalgorithmicBinding">
+         SELECT
+       id as id,
+       event_code as eventCode,
+       algorithmic_name_code as algorithmicNameCode
+       from t_event_algorithmic_binding
+       WHERE 1 = 1 and deleted = 0
+    </select>
+</mapper>

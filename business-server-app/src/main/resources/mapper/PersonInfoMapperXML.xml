@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.PersonInfoMapper">
+
+    <resultMap type="com.xtxk.cn.entity.PersonInfo" id="PersonInfoMap">
+        <result property="personId" column="person_id" jdbcType="INTEGER"/>
+        <result property="personName" column="person_name" jdbcType="VARCHAR"/>
+        <result property="personPhoto" column="person_photo" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="INTEGER"/>
+        <result property="birth" column="birth" jdbcType="TIMESTAMP"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="idNumber" column="id_number" jdbcType="VARCHAR"/>
+        <result property="personType" column="person_type" jdbcType="INTEGER"/>
+        <result property="district" column="district" jdbcType="INTEGER"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PersonInfoMap">
+        select person_id,
+               person_name,
+               person_photo,
+               gender,
+               birth,
+               phone,
+               id_number,
+               person_type,
+               district,
+               address,
+               create_time,
+               update_time
+        from person_info
+        where person_id = #{personId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryPage" parameterType="com.xtxk.cn.dto.personInfo.SearchInfoDTO" resultMap="PersonInfoMap">
+        select
+        person_id, person_name, person_photo, gender, birth, phone, id_number, person_type, district, address,
+        create_time, update_time,TIMESTAMPDIFF(YEAR,birth,CURDATE()) age
+        from person_info
+        <where>
+            <if test="keyWords!=null and keyWords!=''">
+                <choose>
+                    <when test="keyWords=='男'.toString()">
+                        gender = 1
+                    </when>
+                    <when test="keyWords=='女'.toString()">
+                        and gender = 2
+                    </when>
+                    <otherwise>
+                        and person_name like concat('%',#{keyWords},'%')
+                        or id_number like concat('%',#{keyWords},'%')
+                        or phone like concat('%',#{keyWords},'%')
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="personType != null and personType!=''">
+                and person_type = #{personType}
+            </if>
+            <if test="district != null and district!=''">
+                and district = #{district}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from person_info
+        <where>
+            <if test="personId != null">
+                and person_id = #{personId}
+            </if>
+            <if test="personName != null and personName != ''">
+                and person_name = #{personName}
+            </if>
+            <if test="personPhoto != null and personPhoto != ''">
+                and person_photo = #{personPhoto}
+            </if>
+            <if test="gender != null and gender !=''">
+                and gender = #{gender}
+            </if>
+            <if test="birth != null">
+                and birth = #{birth}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="idNumber != null and idNumber != ''">
+                and id_number = #{idNumber}
+            </if>
+            <if test="personType != null and personType !=''">
+                and person_type = #{personType}
+            </if>
+            <if test="district != null and district !=''">
+                and district = #{district}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="personId" useGeneratedKeys="true">
+        insert into person_info(person_name, person_photo, gender, birth, phone, id_number, person_type, district,
+                                address, create_time, update_time)
+        values (#{personName}, #{personPhoto}, #{gender}, #{birth}, #{phone}, #{idNumber}, #{personType}, #{district},
+                #{address}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="personId" useGeneratedKeys="true">
+        insert into person_info(person_name, person_photo, gender, birth, phone, id_number, person_type, district,
+        address, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.personName}, #{entity.personPhoto}, #{entity.gender}, #{entity.birth}, #{entity.phone},
+            #{entity.idNumber}, #{entity.personType}, #{entity.district}, #{entity.address}, #{entity.createTime},
+            #{entity.updateTime})
+        </foreach>
+        ON duplicate KEY UPDATE id_number = id_number
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update person_info
+        <set>
+            <if test="personName != null and personName != ''">
+                person_name = #{personName},
+            </if>
+            <if test="personPhoto != null and personPhoto != ''">
+                person_photo = #{personPhoto},
+            </if>
+            <if test="gender != null and gender !=''">
+                gender = #{gender},
+            </if>
+            <if test="birth != null">
+                birth = #{birth},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="idNumber != null and idNumber != ''">
+                id_number = #{idNumber},
+            </if>
+            <if test="personType != null and personType !=''">
+                person_type = #{personType},
+            </if>
+            <if test="district != null and district !=''">
+                district = #{district},
+            </if>
+            <if test="address != null and address !=''">
+                address = #{address},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where person_id = #{personId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from person_info
+        where person_id = #{personId}
+    </delete>
+
+    <delete id="deleteBatch">
+        delete from person_info where person_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryPropertyPerson" resultType="com.xtxk.cn.dto.alarmInfo.PropertyPersonItemDto">
+        SELECT
+            person_name as name,
+            phone as phone,
+            person_id as id
+        FROM
+            person_info
+        WHERE
+            person_type = 3
+    </select>
+
+    <select id="getByIdNumber" resultMap="PersonInfoMap">
+        select person_id,
+               person_name,
+               person_photo,
+               gender,
+               birth,
+               phone,
+               id_number,
+               person_type,
+               district,
+               address,
+               create_time,
+               update_time
+        from person_info
+        where id_number = #{idNumber}
+    </select>
+
+    <select id="queryByIds" resultMap="PersonInfoMap">
+        select person_name,
+               phone,
+               person_type
+        from person_info
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+        #{id}
+        </foreach>
+    </select>
+
+    <select id="queryPersonByType" resultType="com.xtxk.cn.dto.personInfo.PersonTypeRspDto">
+        select
+        count(1) cnt,
+        person_type personType
+        from person_info
+        group by person_type
+    </select>
+
+    <select id="queryPersonFlow" resultType="com.xtxk.cn.dto.personInfo.PersonFlowVo">
+        select
+        direction,
+        ti,
+        count(1) cnt
+        from (select direction,DATE_FORMAT(catch_time,'%Y-%m-%d %H:%i') ti
+        from t_person_flow
+        where 1=1
+        <if test="beginDate != null and endDate !=null ">
+            and catch_time
+            between DATE_FORMAT(#{beginDate},'%Y-%m-%d 00:00:00')
+            and DATE_FORMAT(#{endDate},'%Y-%m-%d 00:00:00')
+        </if>
+        ) A
+        group by A.direction,A.ti
+    </select>
+
+    <select id="queryCarFlow" resultType="com.xtxk.cn.dto.carInfo.CarFlowVo">
+        select
+            direction,
+            ti,
+            count(1) cnt
+            from (select direction,DATE_FORMAT(catch_time,'%Y-%m-%d %H:%i') ti
+        from t_car_flow
+        where 1=1
+        <if test="beginDate != null and endDate !=null ">
+            and catch_time
+            between DATE_FORMAT(#{beginDate},'%Y-%m-%d 00:00:00')
+            and DATE_FORMAT(#{endDate},'%Y-%m-%d 00:00:00')) A
+        </if>
+        ) A
+        group by A.direction,A.ti
+
+    </select>
+
+    <select id="queryVioCnt" resultType="com.xtxk.cn.dto.personInfo.VioModelCntDto">
+        select count(*) as cnt,field1 as modelId from t_alarm_violations_detail_info where type=#{type} and field1 in
+        <foreach collection="list" close=")" open="(" separator="," item="item">
+            #{item}
+        </foreach>
+         group by field1
+    </select>
+
+    <select id="queryViolationInfoByTargetId" resultType="com.xtxk.cn.dto.personInfo.VioInfoDto">
+        SELECT
+        tai.event as event,
+        tai.event_desc as eventCode,
+        tai.catch_time as catchTime FROM t_alarm_violations_detail_info tavdi
+        inner join t_alarm_info tai  on tai.id = tavdi.alarm_id
+        where tavdi.field1 =#{targetId} and type=#{type}
+        order by tai.catch_time desc
+    </select>
+
+    <select id="queryPersonCntWithType" resultType="com.xtxk.cn.dto.carInfo.ResourceCntWithTypeDto">
+        select
+        count(*) as cnt,
+        person_type as category from person_info
+        group by person_type
+    </select>
+</mapper>
+

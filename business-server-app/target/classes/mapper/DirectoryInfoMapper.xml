@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.DirectoryInfoMapper">
+    <select id="selectAll" resultType="com.xtxk.cn.entity.DirectoryInfo">
+        SELECT DISTINCT
+            directory_id directoryId,
+            directory_name directoryName,
+            parent_directory_id parentDirectoryId
+        FROM
+            directory_info
+        ORDER BY parentDirectoryId
+    </select>
+
+    <select id="selectAllArea"  resultType="java.lang.String">
+        SELECT DISTINCT
+            directory_name directoryName
+        FROM
+            directory_info
+        WHERE
+                directory_id NOT IN ( SELECT DISTINCT parent_directory_id FROM directory_info )
+        ORDER BY
+            directoryName
+    </select>
+
+</mapper>

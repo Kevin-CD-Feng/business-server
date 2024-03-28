@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.BuildingInfoMapper">
+
+    <resultMap id="buildingInfoResultMap" type="com.xtxk.cn.entity.BuildingInfoPO">
+        <id property="buildingId" column="building_id"/>
+        <result property="buildingNumber" column="building_number"/>
+        <result property="buildingName" column="building_name"/>
+        <result property="buildingManagerName" column="building_manager_name"/>
+        <result property="buildingManagerPhone" column="building_manager_phone"/>
+        <result property="district" column="district"/>
+        <result property="buildingType" column="building_type"/>
+        <result property="buildingDoorCount" column="building_door_count"/>
+        <result property="buildingPersonCount" column="building_person_count"/>
+        <result property="buildingFloorCount" column="building_floor_count"/>
+        <result property="floorSpace" column="floor_space"/>
+        <result property="buildingLongitude" column="building_longitude"/>
+        <result property="buildingLatitude" column="building_latitude"/>
+        <result property="address" column="address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="buildingHeight" column="building_height"/>
+        <result property="buildingIdentity" column="building_identity"/>
+    </resultMap>
+
+    <resultMap id="buildingLocationResultMap" type="com.xtxk.cn.dto.geogra.BuildingLocationInfo">
+        <id property="id" column="building_id"/>
+        <result property="name" column="building_name"/>
+        <result property="buildingLongitude" column="building_longitude"/>
+        <result property="buildingLatitude" column="building_latitude"/>
+        <result property="buildingHeight" column="building_height"/>
+    </resultMap>
+
+    <sql id="buildingInfoCols">
+        building_id,building_number,building_name,building_manager_name,building_manager_phone,district,building_type,
+        building_door_count,building_person_count,building_floor_count,floor_space,
+        building_longitude,building_latitude,address,create_time,update_time,building_height,building_identity
+    </sql>
+
+    <select id="queryByKeyWord" resultMap="buildingInfoResultMap">
+        select
+        <include refid="buildingInfoCols"/>
+        from building_info
+        <trim prefix="where" prefixOverrides="or">
+            <if test="keyWord !=null and keyWord !=''">
+                or building_name like concat('%',#{keyWord},'%')
+            </if>
+            <!--<if test="keyWord !=null and keyWord !=''">
+                or district like concat('%',#{keyWord},'%')
+            </if>
+            <if test="keyWord !=null and keyWord !=''">
+                or address like concat('%',#{keyWord},'%')
+            </if>-->
+        </trim>
+    </select>
+
+    <insert id="add" parameterType="com.xtxk.cn.entity.BuildingInfoPO">
+        insert into building_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="buildingId !=null">
+                building_id,
+            </if>
+            <if test="buildingName !=null and buildingName !=''">
+                building_name,
+            </if>
+            <if test="buildingManagerName !=null and buildingManagerName !=''">
+                building_manager_name,
+            </if>
+            <if test="buildingManagerPhone !=null and buildingManagerPhone !=''">
+                building_manager_phone,
+            </if>
+            <if test="district !=null and district!=''">
+                district,
+            </if>
+            <if test="buildingType !=null and buildingType!=''">
+                building_type,
+            </if>
+            <if test="buildingDoorCount !=null">
+                building_door_count,
+            </if>
+            <if test="buildingPersonCount !=null">
+                building_person_count,
+            </if>
+            <if test="buildingFloorCount !=null">
+                building_floor_count,
+            </if>
+            <if test="floorSpace !=null">
+                floor_space,
+            </if>
+            <if test="buildingLongitude !=null and buildingLongitude!=''">
+                building_longitude,
+            </if>
+            <if test="buildingLatitude !=null and buildingLatitude!=''">
+                building_latitude,
+            </if>
+            <if test="address !=null and address !=''">
+                address,
+            </if>
+            <if test="createTime !=null">
+                create_time,
+            </if>
+            <if test="updateTime !=null">
+                update_time
+            </if>
+            <if test="buildingHeight !=null and buildingHeight!=''">
+                building_height
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="buildingId !=null">
+                #{buildingId},
+            </if>
+            <if test="buildingName !=null and buildingName !=''">
+                #{buildingName},
+            </if>
+            <if test="buildingManagerName !=null and buildingManagerName !=''">
+                #{buildingManagerName},
+            </if>
+            <if test="buildingManagerPhone !=null and buildingManagerPhone !=''">
+                #{buildingManagerPhone},
+            </if>
+            <if test="district !=null and district!=''">
+                #{district},
+            </if>
+            <if test="buildingType !=null and buildingType!=''">
+                #{buildingType},
+            </if>
+            <if test="buildingDoorCount !=null">
+                #{buildingDoorCount},
+            </if>
+            <if test="buildingPersonCount !=null">
+                #{buildingPersonCount},
+            </if>
+            <if test="buildingFloorCount !=null">
+                #{buildingFloorCount},
+            </if>
+            <if test="floorSpace !=null">
+                #{floorSpace},
+            </if>
+            <if test="buildingLongitude !=null and buildingLongitude!=''">
+                #{buildingLongitude},
+            </if>
+            <if test="buildingLatitude !=null and buildingLatitude!=''">
+                #{buildingLatitude},
+            </if>
+            <if test="address !=null and address !=''">
+                #{address},
+            </if>
+            <if test="createTime !=null">
+                #{createTime},
+            </if>
+            <if test="updateTime !=null">
+                #{updateTime}
+            </if>
+            <if test="buildingHeight !=null and buildingHeight!=''">
+                #{buildingHeight}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.xtxk.cn.entity.BuildingInfoPO">
+        update building_info
+        <set>
+            <if test="buildingName !=null and buildingName !=''">
+                building_name=#{buildingName},
+            </if>
+            <if test="buildingManagerName !=null and buildingManagerName !=''">
+                building_manager_name=#{buildingManagerName},
+            </if>
+            <if test="buildingManagerPhone !=null and buildingManagerPhone !=''">
+                building_manager_phone=#{buildingManagerPhone},
+            </if>
+            <if test="district !=null and district!=''">
+                district=#{district},
+            </if>
+            <if test="buildingType !=null and buildingType!=''">
+                building_type=#{buildingType},
+            </if>
+            <if test="buildingDoorCount !=null">
+                building_door_count=#{buildingDoorCount},
+            </if>
+            <if test="buildingPersonCount !=null">
+                building_person_count=#{buildingPersonCount},
+            </if>
+            <if test="buildingFloorCount !=null">
+                building_floor_count=#{buildingFloorCount},
+            </if>
+            <if test="floorSpace !=null">
+                floor_space=#{floorSpace},
+            </if>
+            <if test="buildingLongitude !=null and buildingLongitude!=''">
+                building_longitude=#{buildingLongitude},
+            </if>
+            <if test="buildingLatitude !=null and buildingLatitude!=''">
+                building_latitude=#{buildingLatitude},
+            </if>
+            <if test="address !=null and address !=''">
+                address=#{address},
+            </if>
+            <if test="buildingIdentity!=null and buildingIdentity!=''">
+                building_identity =#{buildingIdentity},
+            </if>
+            update_time=now()
+        </set>
+        where building_id=#{buildingId}
+    </update>
+
+    <select id="getById" resultMap="buildingInfoResultMap">
+        select
+        <include refid="buildingInfoCols"/>
+        from building_info
+        where building_id=#{buildingId}
+    </select>
+
+    <select id="getBuildInfoByDeviceId" resultMap="buildingInfoResultMap">
+        select
+        md.building_id,
+        md.building_name,
+        md.building_manager_name,
+        md.building_manager_phone,
+        md.district,
+        md.building_type
+        from building_info bd
+        inner join monitor_device md on md.building_id=bd.building_id
+        where md.device_id=#{deviceId}
+    </select>
+
+    <delete id="deleteById">
+        delete from building_info
+        where building_id=#{buildingId}
+    </delete>
+
+    <select id="getAllBuildingLocationInfo" resultMap="buildingLocationResultMap">
+        select building_id,building_name,building_longitude,building_latitude,building_height
+        from building_info
+    </select>
+
+    <select id="getBuildInfoByIdentityId" resultMap="buildingInfoResultMap">
+        select
+        <include refid="buildingInfoCols"/>
+        from building_info
+        where building_identity=#{identityId}
+    </select>
+
+    <select id="getBuildingDeviceListByIdentityId" parameterType="java.lang.String" resultType="com.xtxk.cn.dto.build.BuildingDevicePO">
+        SELECT
+            b.building_id buildingId,
+            b.building_name buildingName,
+            b.building_identity buildingIdentity,
+            m.device_id deviceId,
+            m.device_name deviceName,
+            m.device_state deviceState
+        FROM
+            building_info b
+                LEFT JOIN monitor_device m ON b.building_id = m.building_id
+        WHERE
+            b.building_identity = #{identityId}
+    </select>
+
+    <select id="getBuildingRelatedDeviceList" resultType="com.xtxk.cn.dto.build.BuildingRelatedDeviceDto">
+        SELECT
+            building_id resourceId,
+            building_name resourceName,
+            building_longitude longitude,
+            building_latitude latitude,
+            building_identity identityId,
+            'building' AS category
+        FROM
+            building_info
+    </select>
+</mapper>

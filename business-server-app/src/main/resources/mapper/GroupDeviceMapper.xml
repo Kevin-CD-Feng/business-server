@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xtxk.cn.mapper.GroupDeviceMapper" >
+  <resultMap id="BaseResultMap" type="com.xtxk.cn.entity.GroupDevice" >
+    <id column="group_id" property="groupId" jdbcType="VARCHAR" />
+    <result column="strategy_id" property="strategyId" jdbcType="VARCHAR" />
+    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="res_ch" property="resCh" jdbcType="VARCHAR" />
+    <result column="resource_type" property="resourceType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    group_id, strategy_id, device_id, device_name, res_ch, resource_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from group_device
+    where group_id = #{groupId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from group_device
+    where group_id = #{groupId,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.xtxk.cn.entity.GroupDevice" >
+    insert into group_device (group_id, strategy_id, device_id, 
+      device_name, res_ch, resource_type
+      )
+    values (#{groupId,jdbcType=VARCHAR}, #{strategyId,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
+      #{deviceName,jdbcType=VARCHAR}, #{resCh,jdbcType=VARCHAR}, #{resourceType,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xtxk.cn.entity.GroupDevice" >
+    insert into group_device
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="strategyId != null" >
+        strategy_id,
+      </if>
+      <if test="deviceId != null" >
+        device_id,
+      </if>
+      <if test="deviceName != null" >
+        device_name,
+      </if>
+      <if test="resCh != null" >
+        res_ch,
+      </if>
+      <if test="resourceType != null" >
+        resource_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyId != null" >
+        #{strategyId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resCh != null" >
+        #{resCh,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null" >
+        #{resourceType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xtxk.cn.entity.GroupDevice" >
+    update group_device
+    <set >
+      <if test="strategyId != null" >
+        strategy_id = #{strategyId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resCh != null" >
+        res_ch = #{resCh,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null" >
+        resource_type = #{resourceType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where group_id = #{groupId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xtxk.cn.entity.GroupDevice" >
+    update group_device
+    set strategy_id = #{strategyId,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      res_ch = #{resCh,jdbcType=VARCHAR},
+      resource_type = #{resourceType,jdbcType=VARCHAR}
+    where group_id = #{groupId,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insertBatch" parameterType="list">
+    insert into group_device (device_id,strategy_id,group_id,device_name,res_ch,resource_type)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.deviceId,jdbcType=VARCHAR},#{item.strategyId,jdbcType=VARCHAR},
+       #{item.groupId,jdbcType=VARCHAR},#{item.deviceName,jdbcType=VARCHAR},
+       #{item.resCh,jdbcType=VARCHAR},#{item.resourceType,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <delete id="deleteByStrategyId" parameterType="string">
+    delete from group_device where strategy_id = #{strategyId}
+  </delete>
+
+  <select id="selectAll" resultType="com.xtxk.cn.dto.patrolstrategy.GroupDeviceDTO">
+    select
+      g.group_id groupId, g.strategy_id strategyId, g.device_id deviceId, g.device_name deviceName,
+      g.res_ch resCh, g.resource_type resourceType,m.device_state deviceState,m.hk_camera_code hkCameraCode
+    from group_device g left join monitor_device m on g.device_id = m.device_id
+  </select>
+</mapper>

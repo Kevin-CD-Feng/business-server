@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.GateMachineMapper">
+
+    <resultMap id="gateMachineResultMap" type="com.xtxk.cn.entity.GateMachinePO">
+        <id property="gateMachineId" column="gate_machine_id"/>
+        <result property="gateMachineName" column="gate_machine_name"/>
+        <result property="dutyPhone" column="duty_phone"/>
+        <result property="district" column="district"/>
+        <result property="gateMachineLongitude" column="gate_machine_longitude"/>
+        <result property="gateMachineLatitude" column="gate_machine_latitude"/>
+        <result property="address" column="address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="gateState"  column="gate_state"/>
+    </resultMap>
+
+    <resultMap id="getGeograObjDtoResultMap" type="com.xtxk.cn.dto.geogra.GeograObjDto">
+        <id property="id" column="gate_machine_id" javaType="string" jdbcType="INTEGER"/>
+        <result property="name" column="gate_machine_name"/>
+        <result property="longitude" column="gate_machine_longitude"/>
+        <result property="latitude" column="gate_machine_latitude"/>
+        <result property="type" column="type" javaType="string" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="gateMachineCols">
+       gate_machine_id,gate_machine_name,duty_phone,district,gate_machine_longitude,gate_machine_latitude,
+       address,create_time,update_time,gate_state
+    </sql>
+
+    <select id="queryByKeyWord" resultMap="gateMachineResultMap">
+        select
+        <include refid="gateMachineCols"/>
+        from gate_machine
+        <trim prefix="where" prefixOverrides="or">
+            <if test="keyWord !=null and keyWord !=''">
+                or gate_machine_name like concat('%',#{keyWord},'%')
+            </if>
+            <!--<if test="keyWord !=null and keyWord !=''">
+                or district like concat('%',#{keyWord},'%')
+            </if>
+            <if test="keyWord !=null and keyWord !=''">
+                or address like concat('%',#{keyWord},'%')
+            </if>-->
+        </trim>
+    </select>
+
+    <insert id="add" parameterType="com.xtxk.cn.entity.GateMachinePO">
+        insert into gate_machine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gateMachineId !=null">
+                building_id,
+            </if>
+            <if test="gateMachineName !=null and gateMachineName !=''">
+                gate_machine_name,
+            </if>
+            <if test="dutyPhone !=null and dutyPhone !=''">
+                duty_phone,
+            </if>
+            <if test="district !=null and district !=''">
+                district,
+            </if>
+            <if test="gateMachineLongitude !=null">
+                gate_machine_longitude,
+            </if>
+            <if test="gateMachineLatitude !=null">
+                gate_machine_latitude,
+            </if>
+            <if test="address !=null and address !=''">
+                address,
+            </if>
+            <if test="createTime !=null">
+                create_time,
+            </if>
+            <if test="updateTime !=null">
+                update_time
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gateMachineId !=null">
+                #{gateMachineId},
+            </if>
+            <if test="gateMachineName !=null and gateMachineName !=''">
+                #{gateMachineName},
+            </if>
+            <if test="dutyPhone !=null and dutyPhone !=''">
+                #{dutyPhone},
+            </if>
+            <if test="district !=null and district !=''">
+                #{district},
+            </if>
+            <if test="gateMachineLongitude !=null">
+                #{gateMachineLongitude},
+            </if>
+            <if test="gateMachineLatitude !=null">
+                #{gateMachineLatitude},
+            </if>
+            <if test="address !=null and address !=''">
+                #{address},
+            </if>
+            <if test="createTime !=null">
+                #{createTime},
+            </if>
+            <if test="updateTime !=null">
+                #{updateTime}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.xtxk.cn.entity.GateMachinePO">
+        update gate_machine
+        <set>
+            <if test="gateMachineName !=null and gateMachineName !=''">
+                gate_machine_name=#{gateMachineName},
+            </if>
+            <if test="dutyPhone !=null and dutyPhone !=''">
+                duty_phone=#{dutyPhone},
+            </if>
+            <if test="district !=null and district !=''">
+                district=#{district},
+            </if>
+            <if test="gateMachineLongitude !=null">
+                gate_machine_longitude=#{gateMachineLongitude},
+            </if>
+            <if test="gateMachineLatitude !=null">
+                gate_machine_latitude=#{gateMachineLatitude},
+            </if>
+            <if test="address !=null and address !=''">
+                address=#{address},
+            </if>
+            update_time=now()
+        </set>
+        where gate_machine_id=#{gateMachineId}
+    </update>
+
+    <select id="getById" resultMap="gateMachineResultMap">
+        select
+        <include refid="gateMachineCols"/>
+        from gate_machine
+        where gate_machine_id=#{gateMachineId}
+    </select>
+
+    <delete id="deleteById">
+        delete from gate_machine
+       where gate_machine_id=#{gateMachineId}
+    </delete>
+
+    <select id="getGeograObjDto" resultMap="getGeograObjDtoResultMap">
+        select gate_machine_id,gate_machine_name,gate_machine_longitude,gate_machine_latitude,2 `type`
+        from gate_machine
+    </select>
+</mapper>

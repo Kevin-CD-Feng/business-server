@@ -1,0 +1,89 @@
+server:
+  port: 9529
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+      enabled: true
+    context-path: /recognization
+
+spring:
+  application:
+    name: recognition-prepare-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/intelligence_community?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 123456
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+#调度系统
+scheduling:
+  #调度系统url
+  baseUrl: http://10.40.63.3:9528/
+  algorithm:
+    open: /algorithm/modify
+    close: /algorithm/invalid
+  identify:
+    open: /algorithm/enable
+    close: /algorithm/disable
+  # 多个值逗号分隔
+  keys: bbox
+  carConf: 0.6
+  personConf: 0.6
+  alarmWithFace: wgfysj,zgdlgsj
+  mockEnable: "no"
+
+
+busiapp:
+  baseUrl: http://10.40.63.7:9527
+  dealAlarmInfoUrl: /intelligence/alarmInfo/dealAlarmInfo
+  startRecordUrl: /video/startVideo
+  stopRecordUrl: /video/stopVideo
+
+
+minio:
+  endpoint: http://10.79.76.103:9001
+  accessKey: admin
+  secretKey: Xtxk_02787179095
+  bucketName: filebucket
+
+
+#是否开启swagger
+swagger:
+  enable: true
+
+alg:
+  crawl:  #攀爬
+    coff: 0.6  #置信度
+    event: wgfysj #约定攀爬事件Code,isSupport方法用
+
+  walkdog: #遛狗
+    coff: 0.6 #狗的置信度
+    event: zgdlgsj #约定遛狗事件Code
+
+  xclrxr: #行车不礼让行人
+    pcoff: 0.5  #人的置信度
+    ccoff: 0.5  #车的置信度
+    event: jdcblrxrsj #约定的不礼让行人事件Code
+
+  wgtc: #车辆乱停乱放
+    coff: 0.6 #车的置信度
+    event: jdcltlfsj
+
+  gkpw: #高空抛物
+    event: gkpwsj
+
+logging:
+  config: classpath:logback.xml
+  level:
+    root: info
+    sql: info
+    com.xtxk.recognition.prepare.service.algAction: debug
+    com.xtxk.recognition.prepare.service.web: debug

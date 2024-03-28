@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xtxk.cn.mapper.PatrolStrategyMapper" >
+  <resultMap id="BaseResultMap" type="com.xtxk.cn.entity.PatrolStrategy" >
+    <id column="strategy_id" property="strategyId" jdbcType="VARCHAR" />
+    <result column="strategy_name" property="strategyName" jdbcType="VARCHAR" />
+    <result column="strategy_type" property="strategyType" jdbcType="INTEGER" />
+    <result column="patrol_interval" property="patrolInterval" jdbcType="INTEGER" />
+    <result column="is_open_voice" property="isOpenVoice" jdbcType="INTEGER" />
+    <result column="window_layout" property="windowLayout" jdbcType="INTEGER" />
+    <result column="patrol_screen" property="patrolScreen" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    strategy_id, strategy_name, strategy_type, patrol_interval, is_open_voice, window_layout, 
+    patrol_screen, create_time, update_time, is_del, type, user_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from patrol_strategy
+    where strategy_id = #{strategyId,jdbcType=VARCHAR}
+  </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from patrol_strategy
+    where strategy_id = #{strategyId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xtxk.cn.entity.PatrolStrategy" >
+    insert into patrol_strategy (strategy_id, strategy_name, strategy_type, 
+      patrol_interval, is_open_voice, window_layout, 
+      patrol_screen, create_time, update_time, 
+      is_del, type, user_id
+      )
+    values (#{strategyId,jdbcType=VARCHAR}, #{strategyName,jdbcType=VARCHAR}, #{strategyType,jdbcType=INTEGER}, 
+      #{patrolInterval,jdbcType=INTEGER}, #{isOpenVoice,jdbcType=INTEGER}, #{windowLayout,jdbcType=INTEGER}, 
+      #{patrolScreen,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{isDel,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xtxk.cn.entity.PatrolStrategy" >
+    insert into patrol_strategy
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="strategyId != null" >
+        strategy_id,
+      </if>
+      <if test="strategyName != null" >
+        strategy_name,
+      </if>
+      <if test="strategyType != null" >
+        strategy_type,
+      </if>
+      <if test="patrolInterval != null" >
+        patrol_interval,
+      </if>
+      <if test="isOpenVoice != null" >
+        is_open_voice,
+      </if>
+      <if test="windowLayout != null" >
+        window_layout,
+      </if>
+      <if test="patrolScreen != null" >
+        patrol_screen,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="strategyId != null" >
+        #{strategyId,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyName != null" >
+        #{strategyName,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyType != null" >
+        #{strategyType,jdbcType=INTEGER},
+      </if>
+      <if test="patrolInterval != null" >
+        #{patrolInterval,jdbcType=INTEGER},
+      </if>
+      <if test="isOpenVoice != null" >
+        #{isOpenVoice,jdbcType=INTEGER},
+      </if>
+      <if test="windowLayout != null" >
+        #{windowLayout,jdbcType=INTEGER},
+      </if>
+      <if test="patrolScreen != null" >
+        #{patrolScreen,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xtxk.cn.entity.PatrolStrategy" >
+    update patrol_strategy
+    <set >
+      <if test="strategyName != null" >
+        strategy_name = #{strategyName,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyType != null" >
+        strategy_type = #{strategyType,jdbcType=INTEGER},
+      </if>
+      <if test="patrolInterval != null" >
+        patrol_interval = #{patrolInterval,jdbcType=INTEGER},
+      </if>
+      <if test="isOpenVoice != null" >
+        is_open_voice = #{isOpenVoice,jdbcType=INTEGER},
+      </if>
+      <if test="windowLayout != null" >
+        window_layout = #{windowLayout,jdbcType=INTEGER},
+      </if>
+      <if test="patrolScreen != null" >
+        patrol_screen = #{patrolScreen,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where strategy_id = #{strategyId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xtxk.cn.entity.PatrolStrategy" >
+    update patrol_strategy
+    set strategy_name = #{strategyName,jdbcType=VARCHAR},
+      strategy_type = #{strategyType,jdbcType=INTEGER},
+      patrol_interval = #{patrolInterval,jdbcType=INTEGER},
+      is_open_voice = #{isOpenVoice,jdbcType=INTEGER},
+      window_layout = #{windowLayout,jdbcType=INTEGER},
+      patrol_screen = #{patrolScreen,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_del = #{isDel,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=VARCHAR}
+    where strategy_id = #{strategyId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="queryByStrategyName" resultType="com.xtxk.cn.entity.PatrolStrategy">
+    select
+    <include refid="Base_Column_List" />
+    from patrol_strategy
+    where strategy_name = #{strategyName} and is_del != 1
+  </select>
+
+
+  <select id="queryList" parameterType="com.xtxk.cn.dto.patrolstrategy.Params" resultType="com.xtxk.cn.dto.patrolstrategy.PatrolStrategyDTO">
+    select
+    strategy_id strategyId, strategy_name strategyName, strategy_type strategyType, patrol_interval patrolInterval, window_layout windowLayout,
+    patrol_screen patrolScreen, type type
+    from patrol_strategy
+    <where>
+      <if test="strategyType != null">
+        and strategy_type = #{strategyType,jdbcType=INTEGER}
+      </if>
+      <if test="strategyName != null and strategyName!=''">
+        and strategy_name like like concat('%',#{strategyName},'%')
+      </if>
+      and is_del != 1 ORDER BY create_time DESC
+    </where>
+  </select>
+</mapper>

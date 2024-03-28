@@ -1,0 +1,9 @@
+{
+  "catchTime": "1694243159953",
+  "coff": [],
+  "data": "{\"code\":200,\"data\":[{\"bbox\":[20,20,50,50],\"conf\":0.8,\"label\":\"vehicle\"}]}",
+  "eventCode": "jdcltlfsj",
+  "path": "2023-09-04 14:06:35/41830b9a-ae49-40b6-9fce-3a8ec3b14a0b.jpeg",
+  "resourceId": "107dc52b0f3647e7aa762808dc3a61e7",
+  "roi": []
+}

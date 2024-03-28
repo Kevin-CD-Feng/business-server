@@ -1,0 +1,85 @@
+server:
+  port: 9529
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+      enabled: true
+    context-path: /recognization
+
+spring:
+  application:
+    name: recognition-prepare-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+
+#调度系统
+scheduling:
+  #调度系统url
+  baseUrl: ${SCHEDULING_BASEURL}
+  algorithm:
+    open: /algorithm/modify
+    close: /algorithm/invalid
+  identify:
+    open: /algorithm/enable
+    close: /algorithm/disable
+  # 多个值逗号分隔
+  keys: bbox
+  carConf: 0.6
+  personConf: 0.6
+
+
+busiapp:
+  baseUrl: ${BUSIAPP_BASEURL}
+  dealAlarmInfoUrl: /intelligence/alarmInfo/dealAlarmInfo
+
+
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  accessKey: ${MINIO_ACCESSKEY:admin}
+  secretKey: ${MINIO_SECRETKEY:Xtxk_02787179095}
+  bucketName: ${MINIO_BUCKETNAME:filebucket}
+
+
+#是否开启swagger
+swagger:
+  enable: ${SWAGGER_ENABLE}
+
+
+alg:
+  crawl:  #攀爬
+    coff: ${ALG_CRAWL_COFF:0.6}  #置信度
+    event: ${ALG_CRAWL_EVENT:wgfysj} #约定攀爬事件Code,isSupport方法用
+
+  walkdog: #遛狗
+    coff: ${ALG_WALKDOG_COFF:0.6} #狗的置信度
+    event: ${ALG_WALKDOG_EVENT:zgdlgsj} #约定遛狗事件Code
+
+  xclrxr: #行车不礼让行人
+    pcoff: ${ALG_XCLRXR_PCOFF:0.5}  #人的置信度
+    ccoff: ${ALG_XCLRXR_CCOFF:0.5}  #车的置信度
+    event: ${ALG_XCLRXR_EVENT:jdcblrxrsj} #约定的不礼让行人事件Code
+
+  wgtc: #车辆乱停乱放
+    coff: ${ALG_WGTC_COFF:0.6} #车的置信度
+    event: ${ALG_WGTC_EVENT:jdcltlfsj}
+
+  gkpw: #高空抛物
+    event: ${ALG_GKPW_EVENT:gkpwsj}
+
+
+logging:
+  config: classpath:logback.xml
+  level:
+    root: info
+    sql: info
+    com.xtxk.recognition.prepare.service.algAction: ${ALG_LOG_LEVEL:debug}
+    com.xtxk.recognition.prepare.service.web: ${WEB_LOG_LEVEL:debug}

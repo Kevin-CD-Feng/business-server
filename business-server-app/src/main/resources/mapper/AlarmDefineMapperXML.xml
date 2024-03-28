@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.AlarmDefineMapper">
+
+    <!--新增-->
+    <insert id="insert" parameterType="com.xtxk.cn.entity.AlarmDefine">
+        INSERT INTO
+        t_alarm_define(event_code,event_name,type_code,disposal_flag,intervals,create_time,create_user,deleted)
+        VALUES(#{eventCode},#{eventName},#{typeCode},#{disposalFlag},#{intervals}, #{createTime}, #{createUser}, #{deleted})
+    </insert>
+
+    <!--校验eventCode否存在-->
+    <select id="checkEventCode" resultType="com.xtxk.cn.entity.AlarmDefine">
+       SELECT event_code as eventCode,intervals as intervals from t_alarm_define
+       WHERE 1 = 1
+             AND event_code = #{eventCode}
+             and deleted = 0
+    </select>
+
+    <!--校验eventCode否存在-->
+    <select id="queryById" resultType="com.xtxk.cn.entity.AlarmDefine">
+       SELECT
+       id as id,
+       event_code as eventCode,
+       type_code as typeCode,
+       disposal_flag as disposalFlag,
+       intervals as intervals
+       from t_alarm_define
+       WHERE 1 = 1
+             AND id = #{id}
+             and deleted = 0
+    </select>
+
+    <update id="update" parameterType="com.xtxk.cn.entity.AlarmDefine">
+        UPDATE t_alarm_define SET
+                event_code=#{eventCode},event_name=#{eventName},type_code=#{typeCode},disposal_flag=#{disposalFlag},intervals=#{intervals},update_time=#{updateTime},update_user=#{updateUser}
+        WHERE
+            id = #{id}
+            and deleted = 0
+    </update>
+
+    <!--查询设备绑定-->
+    <select id="checkCorrelationDevice" parameterType="java.lang.Integer" resultType="com.xtxk.cn.entity.AlarmDefine">
+       SELECT
+            d.event_code AS eventCode
+        FROM
+            t_alarm_define d
+            INNER JOIN t_alarm_policy_configuration p ON p.event_code = d.event_code
+            AND p.deleted = 0
+        WHERE
+            1 = 1
+            AND d.id = #{id}
+            AND d.deleted = 0
+    </select>
+
+    <!--查询算法绑定-->
+    <select id="checkCorrelationAlgorithmic" parameterType="java.lang.Integer" resultType="com.xtxk.cn.entity.AlarmDefine">
+       SELECT
+            d.event_code AS eventCode
+        FROM
+            t_alarm_define d
+            INNER JOIN t_event_algorithmic_binding p ON p.event_code = d.event_code
+            AND p.deleted = 0
+        WHERE
+            1 = 1
+            AND d.id = #{id}
+            AND d.deleted = 0
+    </select>
+
+    <!--逻辑删除-->
+    <update id="delete">
+        UPDATE t_alarm_define SET
+                deleted=1,update_time=#{updateTime},update_user=#{updateUser}
+        WHERE
+        deleted = 0
+        and   id <foreach collection="ids" item="id" open="in(" close=")" separator=",">#{id}</foreach>
+
+    </update>
+
+    <select id="queryPageList" resultType="com.xtxk.cn.entity.AlarmDefine">
+        SELECT
+           id as id,
+           event_code as eventCode,
+           event_name as eventName,
+           type_code as typeCode,
+           disposal_flag as disposalFlag,
+           intervals as intervals
+        from t_alarm_define
+        where
+        1 = 1
+        <if test="param.eventName!=null and param.eventName != ''">
+            AND event_name LIKE CONCAT(
+            '%',#{param.eventName},'%')
+        </if>
+        and deleted = 0
+    </select>
+
+    <select id="queryDisposalFlag" resultType="com.xtxk.cn.entity.AlarmDefine">
+        SELECT
+            t.disposal_flag as disposalFlag
+        FROM
+            t_alarm_define t
+        WHERE
+            t.event_code = #{eventCode}
+            AND deleted = 0
+    </select>
+
+</mapper>

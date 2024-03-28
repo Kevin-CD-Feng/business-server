@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.recognition.prepare.service.mapper.AlgorithmicModelMapper">
+
+    <select id="queryByNameCode" parameterType="java.lang.String" resultType="com.xtxk.recognition.prepare.service.entity.AlgorithmicModel">
+        select *
+        from t_algorithmic_model
+        where
+        1 = 1
+        and name_code = #{nameCode}
+        and deleted = 0
+    </select>
+
+    <insert id="insert">
+      INSERT INTO
+        t_algorithmic_model (name,name_code,url,parameter_sample,create_time,create_user,deleted)
+        VALUES(#{name},#{nameCode},#{url},#{parameterSample},#{createTime},#{createUser},#{deleted})
+    </insert>
+
+    <select id="queryById" parameterType="java.lang.Integer" resultType="com.xtxk.recognition.prepare.service.entity.AlgorithmicModel">
+        select
+        id as id,
+        name_code as nameCode,
+        url as url,
+        parameter_sample as parameterSample
+        from t_algorithmic_model
+        where
+        1 = 1
+        and id = #{id}
+        and deleted = 0
+    </select>
+
+    <update id="update" parameterType="com.xtxk.recognition.prepare.service.entity.AlgorithmicModel">
+        UPDATE t_algorithmic_model SET
+                name_code=#{nameCode},url=#{url},parameter_sample=#{parameterSample},name=#{name},update_time=#{updateTime},update_user=#{updateUser}
+        WHERE
+            id = #{id}
+            and deleted = 0
+    </update>
+
+    <!--查询事件绑定-->
+    <select id="checkCorrelationEvent" parameterType="java.lang.Integer" resultType="com.xtxk.recognition.prepare.service.entity.AlgorithmicModel">
+       SELECT
+            d.name_code AS nameCode
+        FROM
+            t_algorithmic_model d
+            INNER JOIN t_event_algorithmic_binding p ON p.algorithmic_name_code = d.name_code
+            AND p.deleted = 0
+        WHERE
+            1 = 1
+            AND d.id = #{id}
+            AND d.deleted = 0
+    </select>
+
+    <!--逻辑删除-->
+    <update id="delete">
+        UPDATE t_algorithmic_model SET
+        deleted=1,update_time=#{updateTime},update_user=#{updateUser}
+        WHERE
+        deleted = 0
+        and   id <foreach collection="ids" item="id" open="in(" close=")" separator=",">#{id}</foreach>
+
+    </update>
+
+    <select id="queryPageList" resultType="com.xtxk.recognition.prepare.service.entity.AlgorithmicModel">
+        SELECT
+        id as id,
+        name as name,
+        url as url,
+        parameter_sample as parameterSample
+        from t_algorithmic_model
+        where
+        1 = 1
+        <if test="param.eventName!=null and param.eventName != ''">
+            AND name LIKE CONCAT(
+            '%',#{param.eventName},'%')
+        </if>
+        AND deleted = 0
+    </select>
+
+    <select id="algorithmicList" resultType="com.xtxk.recognition.prepare.service.dto.algorithmicModel.AlgorithmicItemDto">
+        SELECT
+            name_code AS algorithmCode,
+            parameter_sample AS algorithmReqJsonStr,
+            url AS algorithmUrl
+        FROM
+            t_algorithmic_model
+        WHERE
+            1 = 1
+            AND deleted = 0
+    </select>
+
+</mapper>

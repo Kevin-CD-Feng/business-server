@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.AlarmDealInfoMapper">
+
+    <!--新增所有列-->
+    <insert id="insert">
+        insert into t_alarm_deal_info(alarm_id, deal_person, issued_time, create_time,deleted)
+        values (#{alarmId}, #{dealPerson}, #{issuedTime}, #{createTime},#{deleted})
+    </insert>
+
+    <select id="queryIssuedInfo" resultType="com.xtxk.cn.entity.AlarmDealInfo">
+      SELECT
+            deal_person as dealPerson,
+            deal_person_name as dealPersonName,
+            issued_time as issuedTime,
+            completion_time as completionTime,
+            completion_url as completionUrl,
+            deal_desc as dealDesc
+        FROM
+            t_alarm_deal_info
+        WHERE
+            alarm_id = #{alarmId}
+    </select>
+
+    <insert id="batchInsert">
+        insert into t_alarm_deal_info(alarm_id, deal_person, issued_time, create_time, deleted, deal_person_name,completion_time,deal_desc,deal_status)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.alarmId}, #{item.dealPerson}, #{item.issuedTime}, #{item.createTime},
+            #{item.deleted},#{item.dealPersonName},#{item.completionTime},#{item.dealDesc},#{item.dealStatus})
+        </foreach>
+    </insert>
+
+    <select id="queryByDetailId" resultType="com.xtxk.cn.entity.AlarmDealInfo">
+        SELECT
+            issued_time as issuedTime,
+            completion_time as completionTime,
+            completion_url as completionUrl,
+            deal_desc as dealDesc
+        FROM
+            t_alarm_deal_info
+        WHERE
+            id = #{detailId}
+    </select>
+    <select id="queryByAlarmId" resultType="com.xtxk.cn.entity.AlarmDealInfo">
+        SELECT
+            completion_time as completionTime
+        FROM
+            t_alarm_deal_info
+        WHERE
+            alarm_id = #{alarmId}
+    </select>
+</mapper>

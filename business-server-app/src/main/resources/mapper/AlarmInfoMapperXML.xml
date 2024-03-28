@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xtxk.cn.mapper.AlarmInfoMapper">
+
+    <resultMap id="alarmInfoResultMap" type="com.xtxk.cn.entity.AlarmInfo">
+        <id property="id" column="id"/>
+        <result property="resourceId" column="resource_id"/>
+        <result property="resourceName" column="resource_name"/>
+        <result property="event" column="event"/>
+        <result property="catchTime" column="catch_time"/>
+        <result property="area" column="area"/>
+        <result property="catchImageUrl" column="catch_image_url"/>
+        <result property="processFlag" column="process_flag"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="deleted" column="deleted"/>
+        <result property="resourceType" column="resource_type"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="detailId" column="detail_id"/>
+        <result property="algCode" column="item_parent_code"/>
+        <result property="auditStatus" column="audit_status"/>
+        <result property="recordUrl" column="record_url"/>
+        <result property="hkCameraCode" column="hk_camera_code"/>
+    </resultMap>
+
+    <resultMap id="alarmStatusCountReslutMap" type="com.xtxk.cn.dto.AlarmStatusCount">
+        <result property="status" column="status"/>
+        <result property="count" column="alarm_count"/>
+    </resultMap>
+
+    <resultMap id="alarmTypeCountReslutMap" type="com.xtxk.cn.dto.AlarmTypeCount">
+        <result property="alramTypeCode" column="alarm_type_code"/>
+        <result property="alarmCount" column="alarm_count"/>
+    </resultMap>
+
+    <resultMap id="getGeograObjDtoResultMap" type="com.xtxk.cn.dto.geogra.GeograObjDto">
+        <id property="id" column="id" javaType="string" jdbcType="INTEGER"/>
+        <result property="name" column="event" />
+        <result property="status" column="status" />
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="height" column="device_height"/>
+        <result property="type" column="type" javaType="string" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="devHisAlarmCount" type="com.xtxk.cn.dto.alarmInfo.DevHisAlarmCount">
+        <id property="resourceId" column="resource_id" />
+        <result property="historyAlarmCount" column="history_alarm_count" />
+    </resultMap>
+
+    <sql id="alarmInfoCols">
+        id,resource_id,resource_name,event,catch_time,area,catch_image_url,process_flag,status,
+        create_time,create_user,update_time,deleted,resource_type,longitude,latitude,audit_status,record_url
+    </sql>
+
+    <select id="getLatestUndealedOrDealing" resultMap="alarmInfoResultMap">
+        select
+        t_alarm_info.*,m.hk_camera_code
+        from t_alarm_info
+        LEFT JOIN monitor_device m
+        on t_alarm_info.resource_id = m.device_id
+        where (`status`=2 or `status` =3 or `audit_status` = null or `status` =1) and deleted=0
+        order by t_alarm_info.create_time desc
+        limit 10
+    </select>
+
+    <select id="getTotalByTime" resultType="java.lang.Integer">
+        select count(1) from t_alarm_info
+        <where>
+            deleted=0
+            <choose>
+                <when test="time==1">
+                    and TO_DAYS(create_time)=TO_DAYS(NOW())
+                </when>
+                <when test="time==2">
+                    and DATE_FORMAT(create_time,'%Y%m')=DATE_FORMAT(CURRENT_DATE(),'%Y%m')
+                </when>
+                <when test="time==3">
+                    and YEAR(create_time)=YEAR(NOW())
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <select id="getAlarmStatusCountByTime" resultMap="alarmStatusCountReslutMap">
+        select `status`,count(1) alarm_count from t_alarm_info
+        <where>
+            deleted=0
+            <choose>
+                <when test="time==1">
+                    and TO_DAYS(create_time)=TO_DAYS(NOW())
+                </when>
+                <when test="time==2">
+                    and DATE_FORMAT(create_time,'%Y%m')=DATE_FORMAT(CURRENT_DATE(),'%Y%m')
+                </when>
+                <when test="time==3">
+                    and YEAR(create_time)=YEAR(NOW())
+                </when>
+            </choose>
+        </where>
+        group by `status` order by `status` asc
+    </select>
+
+
+    <select id="getAlarmByResourceId" resultType="com.xtxk.cn.entity.AlarmInfo">
+        SELECT
+            a.`status` as status,
+            a.`event` as event,
+            a.`resource_name` as resourceName,
+            a.catch_time  as catchTime
+        FROM
+            t_alarm_info a
+        WHERE
+            1 = 1
+            AND a.resource_id = #{resourceId}
+            order by a.catch_time
+            limit 3
+    </select>
+
+    <select id="getAlarmTypeCount" resultMap="alarmTypeCountReslutMap">
+         select tad.type_code alarm_type_code,COUNT(tai.id) alarm_count
+         from t_alarm_info tai right join t_alarm_define tad on tai.`event`=tad.event_code
+         where tai.deleted=0
+         GROUP BY tad.type_code order by alarm_type_code asc
+    </select>
+
+
+    <select id="getAreaAlarmCountByType" resultType="com.xtxk.cn.dto.alarmInfo.AreaItemDto">
+        SELECT
+        area as areaCode,
+        count( id ) AS areaCount
+        FROM
+        t_alarm_info
+        WHERE
+        1 = 1
+        <if test="time == 1">
+            and catch_time BETWEEN CONCAT( CURDATE( ), ' 00:00:00' )
+            AND CONCAT( CURDATE( ), ' 23:59:59' )
+        </if>
+        <if test="time == 2">
+            and DATE_FORMAT(catch_time,'%Y-%m')= DATE_FORMAT(CURDATE(),'%Y-%m')
+        </if>
+        <if test="time == 3">
+            and YEAR(catch_time)=YEAR(NOW())
+        </if>
+        GROUP BY
+        area;
+    </select>
+
+    <select id="getAreaAlarmCountByType2" resultType="com.xtxk.cn.dto.alarmInfo.AreaItemDto">
+        SELECT
+        area as areaCode,
+        count( id ) AS areaCount
+        FROM
+        t_alarm_info
+        WHERE
+        1 = 1
+        <if test="resourceType!=null and resourceType!=''">
+            and resource_type =#{resourceType}
+        </if>
+        <if test="beginDate!=null and endDate!=null">
+            and catch_time between #{beginDate} and #{endDate}
+        </if>
+        GROUP BY
+        area;
+    </select>
+
+
+    <select id="getAlarmTypeRatioByType" resultType="com.xtxk.cn.dto.alarmInfo.AlarmTypeItemDto">
+        SELECT
+        event as alarmCode,
+        count( id ) AS count
+        FROM
+        t_alarm_info
+        WHERE
+        1 = 1
+        <if test="time == 1">
+            and catch_time BETWEEN CONCAT( CURDATE( ), ' 00:00:00' )
+            AND CONCAT( CURDATE( ), ' 23:59:59' )
+        </if>
+        <if test="time == 2">
+            and DATE_FORMAT(catch_time,'%Y-%m')= DATE_FORMAT(CURDATE(),'%Y-%m')
+        </if>
+        <if test="time == 3">
+            and YEAR(catch_time)=YEAR(NOW())
+        </if>
+        GROUP BY
+        event;
+    </select>
+    <select id="getAlarmTypeRatioByType2" resultType="com.xtxk.cn.dto.alarmInfo.AlarmTypeItemDto">
+        SELECT
+        event as alarmCode,
+        count( id ) AS count
+        FROM
+        t_alarm_info
+        WHERE
+        1 = 1
+        <if test="resourceType!=null and resourceType!=''">
+            and resource_type =#{resourceType}
+        </if>
+        <if test="beginDate!=null and endDate!=null">
+            and catch_time between #{beginDate} and #{endDate}
+        </if>
+        GROUP BY
+        event;
+    </select>
+    <select id="getAlarmCountByTimeType" resultType="com.xtxk.cn.dto.alarmInfo.AlarmCountItemDto">
+        select
+        count(*) as total,
+        catch_time as time
+        from (select event,DATE_FORMAT(catch_time, #{format} ) as catch_time from t_alarm_info
+        where deleted=0
+        <if test="resourceType!=null and resourceType!=''">
+            and resource_type =#{resourceType}
+        </if>
+        and catch_time BETWEEN #{beginDate} and #{endDate}) A group by event,catch_time
+        order by catch_time asc
+    </select>
+
+    <select id="getAlarmCountByHour" resultType="com.xtxk.cn.dto.alarmInfo.AlarmCountItemDto">
+        SELECT
+            hour_dim.HOUR as time,
+            ifnull( DATA.alert_cnt, 0 ) AS total
+        FROM
+            (
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 6 HOUR ), "%H:00" ) AS HOUR UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 5 HOUR ), "%H:00" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 4 HOUR ), "%H:00" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 3 HOUR ), "%H:00" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 2 HOUR ), "%H:00" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 1 HOUR ), "%H:00" ) UNION ALL
+        SELECT
+            DATE_FORMAT( #{now}, "%H:00" )
+            ) hour_dim
+            LEFT JOIN (
+        SELECT
+            DATE_FORMAT( a.catch_time, "%H:00" ) AS HOUR,
+            count( a.id ) AS alert_cnt
+        FROM
+            t_alarm_info a
+        WHERE
+            DATE_FORMAT( a.catch_time, "%Y%m%d%H0000" ) BETWEEN DATE_FORMAT(date_add(  #{now}, INTERVAL - 6 HOUR ) , "%Y%m%d%H" )
+            AND DATE_FORMAT( #{now}, "%Y%m%d%H0000" )
+            AND a.deleted = 0
+        GROUP BY
+            1
+            ) DATA ON hour_dim.HOUR = DATA.HOUR
+        ORDER BY
+            hour_dim.HOUR;
+    </select>
+
+    <select id="getAlarmCountByDay" resultType="com.xtxk.cn.dto.alarmInfo.AlarmCountItemDto">
+        SELECT
+            DATE_FORMAT(d.date,"%m-%d") as time,
+            ifnull( DATA.alert_cnt, 0 ) AS total
+        FROM
+            (
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 6 DAY ), "%Y-%m-%d" ) AS date UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 5 DAY ), "%Y-%m-%d" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 4 DAY ), "%Y-%m-%d" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 3 DAY ), "%Y-%m-%d" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 2 DAY ), "%Y-%m-%d" ) UNION ALL
+        select
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 1 DAY ), "%Y-%m-%d" ) UNION ALL
+        SELECT
+            DATE_FORMAT( NOW(), "%Y-%m-%d" )
+            ) d
+            LEFT JOIN (
+        SELECT
+            DATE_FORMAT( a.catch_time, "%Y-%m-%d" ) AS date,
+            count( a.id ) AS alert_cnt
+        FROM
+            t_alarm_info a
+        WHERE
+            DATE_FORMAT( a.catch_time, "%Y%m%d" ) BETWEEN date_add( DATE_FORMAT( #{now}, "%Y%m%d" ), INTERVAL - 6 DAY )
+            AND DATE_FORMAT(#{now}, "%Y%m%d" )
+            AND a.deleted = 0
+        GROUP BY
+            1
+            ) DATA ON d.date = DATA.date
+        ORDER BY
+            d.date;
+    </select>
+
+    <select id="getAlarmCountByMonth" resultType="com.xtxk.cn.dto.alarmInfo.AlarmCountItemDto">
+        SELECT
+            d.date as time,
+            ifnull( DATA.alert_cnt, 0 ) AS total
+        FROM
+            (
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 6 MONTH ), "%Y-%m" ) AS date UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 5 MONTH ), "%Y-%m" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 4 MONTH ), "%Y-%m" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 3 MONTH ), "%Y-%m" ) UNION ALL
+        SELECT
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 2 MONTH ), "%Y-%m" ) UNION ALL
+        select
+            DATE_FORMAT( date_add( #{now}, INTERVAL - 1 MONTH ), "%Y-%m" ) UNION ALL
+        SELECT
+            DATE_FORMAT( #{now}, "%Y-%m" )
+            ) d
+            LEFT JOIN (
+        SELECT
+            DATE_FORMAT( a.catch_time, "%Y-%m" ) AS date,
+            count( a.id ) AS alert_cnt
+        FROM
+            t_alarm_info a
+        WHERE
+            DATE_FORMAT( a.catch_time, "%Y%m%d" ) BETWEEN date_add( DATE_FORMAT( #{now}, "%Y%m%d" ), INTERVAL - 6 MONTH )
+            AND DATE_FORMAT( #{now}, "%Y%m%d" )
+            AND a.deleted = 0
+        GROUP BY
+            1
+            ) DATA ON d.date = DATA.date
+        ORDER BY
+            d.date;
+    </select>
+
+    <select id="multiQryAlarmList" resultMap="alarmInfoResultMap" parameterType="com.xtxk.cn.dto.alarmInfo.AlarmQryInfo">
+         select
+            tai.id,
+            tai.resource_id,
+            tai.resource_name,
+            tai.event,
+            tai.catch_time,
+            tai.area,
+            tai.catch_image_url,
+            tai.process_flag,
+            tai.status,
+            tai.create_time,
+            tai.create_user,
+            tai.update_time,
+            tai.deleted,
+            tai.resource_type,
+            tai.longitude,
+            tai.latitude,
+            tai.audit_status,
+            tdi.item_parent_code,
+            tai.record_url,
+            m.hk_camera_code
+         from t_alarm_info tai
+         left join monitor_device m on tai.resource_id = m.device_id
+         inner join t_dic_item tdi on tdi.item_code =tai.event
+         <where>
+             tai.deleted=0
+             <if test="keyWord !=null and keyWord !=''">
+                and tai.resource_name like concat('%',#{keyWord},'%')
+             </if>
+             <if test="alarmStartTime !=null">
+              <![CDATA[and tai.create_time>=#{alarmStartTime}]]>
+             </if>
+             <if test="alarmEndTime !=null">
+                 <![CDATA[and tai.create_time<=#{alarmEndTime}]]>
+             </if>
+             <if test="area !=null and area!=''">
+                  and tai.area=#{area}
+             </if>
+             <if test="event !=null and event !=''">
+                 and tdi.item_parent_code=#{event}
+             </if>
+             <if test="alarmStatus !=null">
+                 and tai.status=#{alarmStatus}
+             </if>
+         </where>
+         order by tai.catch_time desc
+    </select>
+
+    <select id="statisticalCount" resultType="com.xtxk.cn.dto.alarmInfo.StatisticalCountRespDto">
+        SELECT
+         sum(CASE WHEN t.`status` = 1 THEN 1 ELSE 0 END) whs,
+         sum(CASE WHEN t.`status` = 2 THEN 1 ELSE 0 END) wcz,
+         sum(CASE WHEN t.`status` = 3 THEN 1 ELSE 0 END) czz,
+         sum(CASE WHEN t.`status` = 4 THEN 1 ELSE 0 END) ycz,
+         sum(CASE WHEN t.`audit_status`= 'valid' THEN 1 ELSE 0 END ) hsyx,
+         sum(CASE WHEN t.`audit_status`= 'invalid' THEN 1 ELSE 0 END ) hswx
+         FROM
+         t_alarm_info t where t.deleted = 0;
+    </select>
+
+    <select id="pageList" resultType="com.xtxk.cn.entity.AlarmInfo">
+        select
+        t.id as id,
+        t.resource_id as resourceId,
+        t.resource_name as resourceName,
+        t.event as event,
+        t.catch_time as catchTime,
+        t.area as area,
+        t.process_flag as processFlag,
+        t.status as status,
+        t.catch_image_url as catchImageUrl
+        FROM t_alarm_info t
+        where
+        1 = 1
+        AND t.status = #{param.status}
+        and t.deleted = 0
+        <if test="param.keyWord != null and param.keyWord != ''">
+            AND t.resource_name like concat('%',#{param.keyWord},'%')
+        </if>
+        <if test="param.event != null and param.event!= ''">
+          <if test="param.event != '-1'">
+              AND t.event = #{param.event}
+          </if>
+
+        </if>
+        <if test="param.processFlag != -1">
+            AND t.process_flag = #{param.processFlag}
+        </if>
+        order by t.create_time desc
+    </select>
+
+    <select id="getGeograObjDto" resultMap="getGeograObjDtoResultMap">
+        select tai.id,tai.event,2 `status`,tai.longitude,tai.latitude,md.device_height,2 `type`
+        from t_alarm_info tai join monitor_device md on tai.resource_id=md.device_id
+    </select>
+
+    <select id="getById" resultMap="alarmInfoResultMap">
+        select
+        <include refid="alarmInfoCols"/>
+        from t_alarm_info limit 1
+    </select>
+
+    <select id="getAlarmInfosGroupAndLimit3" resultType="com.xtxk.cn.dto.alarmInfo.AlarmInfoByJingWeiDto">
+        SELECT t.latitude,t.longitude,t.catch_time as catchTime,t.`status`,t.resource_name as resourceName,t.`event`,t.resource_type as resourceType,t.resource_id as resourceId,t.rank
+        FROM (SELECT IF(@latitude = a.`latitude` AND @longitude = a.`longitude`, @rownum := @rownum + 1,  @rownum := 1) AS rank,
+        @latitude := a.`latitude`,
+        @longitude := a.`longitude`,
+        a.`latitude`,
+        a.`longitude`,
+        a.catch_time,
+        a.`status`,
+        a.resource_name,a.`event`,a.resource_type,a.resource_id
+        FROM t_alarm_info a,(SELECT @latitude:=NULL,@longitude:=NULL,@rownum:=0) r
+        WHERE a.`latitude` IS NOT NULL AND a.`longitude` IS NOT NULL
+        ORDER BY a.`latitude`,a.`longitude` ASC, a.catch_time DESC) t
+        WHERE t.rank &lt;= 3;
+    </select>
+
+    <select id="queryDetailById" resultType="com.xtxk.cn.entity.AlarmInfo">
+        SELECT
+            t.id AS id,
+            t.resource_name AS resourceName,
+            t.`event` AS EVENT,
+            t.catch_time AS catchTime,
+            t.`status` AS STATUS,
+            t.catch_image_url AS catchImageUrl,
+            t.area AS area,
+            t.process_flag as processFlag,
+            t.event_desc as eventDesc,
+            t.detail_id as detailId
+        FROM
+            t_alarm_info t
+        WHERE
+            id = #{id}
+    </select>
+
+    <select id="queryPersonVioByAlarmId" resultType="com.xtxk.cn.dto.alarmInfo.AlarmObjectDto">
+        select
+        tavdi.alarm_id as alarmId,
+        pi.person_name as alarmObjName,
+        pi.person_id as alarmObjId,
+        pi.phone as contact,
+        pi.person_type as type  from t_alarm_violations_detail_info tavdi
+        left join person_info pi on pi.person_id = tavdi.field1
+        where alarm_id=#{alarmId}
+    </select>
+
+    <select id="queryCarVioByAlarmId" resultType="com.xtxk.cn.dto.alarmInfo.AlarmObjectDto">
+        select
+            tavdi.alarm_id as alarmId,
+            car_owner_name as alarmObjName,
+            tavdi.field1 as alarmObjId,
+            pi.car_type as type,
+            pi.car_owner_phone as contact from t_alarm_violations_detail_info tavdi
+            left join car_info pi on pi.car_number = tavdi.field1
+            where alarm_id=#{alarmId}
+    </select>
+
+    <select id="queryBuildingByAlarmId" resultType="com.xtxk.cn.dto.alarmInfo.AlarmObjectDto">
+        select
+            tavdi.alarm_id as alarmId,
+            pi.building_name as alarmObjName,
+            tavdi.field1 as alarmObjId,
+            tavdi.field2 as floorNumber,
+            tavdi.field3 as houseNumber
+            from t_alarm_violations_detail_info tavdi
+        left join building_info pi on pi.building_id = tavdi.field1
+        where alarm_id=#{alarmId}
+    </select>
+
+    <select id="queryVioCnt" resultType="java.lang.Integer">
+        select
+        count(1) as cnt
+        from t_alarm_violations_detail_info
+        where alarm_id=#{alarmId} and field1=#{objectId}
+        <if test="beginDate!=null and endDate!=null">
+            and create_time between DATE_FORMAT(#{beginDate},'%Y%m%d%H0000') and DATE_FORMAT(#{endDate},'%Y%m%d%H0000')
+        </if>
+    </select>
+
+    <select id="queryAlarmStatusByAlarmId" resultType="com.xtxk.cn.dto.alarmInfo.AlarmDealInfoRspDto">
+        select
+            tadi.deal_status as status,
+            tadi.deal_desc as dealDesc,
+            tadi.deal_person as dealUserId,
+            tadi.deal_person_name as dealUserName,
+            tadi.issued_time as dealTime
+            from t_alarm_deal_info tadi
+            left join t_alarm_info tai on tadi.alarm_id=tai.id
+            where tadi.alarm_id=#{alarmId} order by tadi.create_time desc
+    </select>
+
+    <select id="queryEventDesc" resultType="java.lang.String">
+        select
+        event_desc as eventDesc
+        from t_alarm_deal_info
+        where
+        alarm_id = #{alarmId}
+        and deleted = 0
+    </select>
+
+    <select id="queryViolationsInfo" resultType="com.xtxk.cn.entity.AlarmViolationsDetailInfo">
+        SELECT
+            type AS type,
+            field1 AS field1,
+            field2 AS field2,
+            field3 AS field3
+        FROM
+            t_alarm_violations_detail_info
+        WHERE
+            alarm_id = #{alarmId}
+    </select>
+
+    <update id="updateById" parameterType="com.xtxk.cn.entity.AlarmInfo">
+        update  t_alarm_info
+        <set>
+            <if test="resourceId !=null and resourceId !=''">
+                resource_id=#{resourceId},
+            </if>
+            <if test="resourceName !=null and resourceName !=''">
+                resource_name=#{resourceName},
+            </if>
+            <if test="event !=null">
+                event=#{event},
+            </if>
+            <if test="area !=null">
+                area=#{area},
+            </if>
+            <if test="catchImageUrl !=null and catchImageUrl !=''">
+                catch_image_url=#{catchImageUrl},
+            </if>
+            <if test="processFlag !=null">
+                process_flag=#{processFlag},
+            </if>
+            <if test="status !=null">
+                status=#{status},
+            </if>
+            <if test="resourceType !=null">
+                resource_type=#{resourceType},
+            </if>
+            <if test="longitude !=null">
+                longitude=#{longitude},
+            </if>
+            <if test="latitude !=null">
+                latitude=#{latitude},
+            </if>
+            <if test="eventDesc !=null  and eventDesc !=''">
+                event_desc=#{eventDesc},
+            </if>
+            <if test="auditStatus !=null">
+                audit_status=#{auditStatus},
+            </if>
+            <if test="updateUser!=null">
+                update_user=#{updateUser},
+            </if>
+            <if test="recordUrl!=null">
+                record_url=#{recordUrl},
+            </if>
+            update_time=now()
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="queryCount" resultType="com.xtxk.cn.dto.alarmInfo.FlashingRespDto">
+        SELECT
+            count( 1 ) AS count
+        FROM
+            t_alarm_info
+        WHERE
+            `status` IN ( 1, 2 )
+            and deleted = 0
+    </select>
+
+    <insert id="insert"  keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO
+        t_alarm_info(resource_id,resource_name,event,catch_time,area,catch_image_url,process_flag,status,create_time,deleted,resource_type,longitude,latitude,record_url)
+        VALUES(#{alarmInfo.resourceId},#{alarmInfo.resourceName},#{alarmInfo.event},#{alarmInfo.catchTime},#{alarmInfo.area},
+        #{alarmInfo.catchImageUrl},#{alarmInfo.processFlag}, #{alarmInfo.status}, #{alarmInfo.createTime},#{alarmInfo.deleted},
+        #{alarmInfo.resourceType},#{alarmInfo.longitude},#{alarmInfo.latitude},#{alarmInfo.recordUrl})
+    </insert>
+
+    <select id="getDevHisAlarmCount" resultMap="devHisAlarmCount">
+        select resource_id,count(1) history_alarm_count
+        from t_alarm_info GROUP BY resource_id
+    </select>
+
+    <select id="statisticStatus" parameterType="com.xtxk.cn.dto.statistic.event.ParamDTO"
+            resultType="com.xtxk.cn.dto.AlarmStatusCount">
+        select status, count(1) as `count`
+        from t_alarm_info
+        <where>
+            deleted = 0
+            <if test="eventSource!=null">
+                and resource_type = #{eventSource}
+            </if>
+            <if test="beginTime!=null">
+                and create_time <![CDATA[ >= ]]> #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime!=null">
+                and create_time <![CDATA[ < ]]> #{endTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        group by status
+        order by status
+    </select>
+
+    <select id="statisticTypeHandle" parameterType="com.xtxk.cn.dto.statistic.event.ParamDTO"
+            resultType="com.xtxk.cn.dto.statistic.event.EventHandleDTO">
+        select
+            event as eventCode,
+            count(1) total,
+            count(case when status = 4 then status end) number
+        from t_alarm_info
+        <where>
+            deleted = 0
+            <if test="eventSource!=null">
+                and resource_type = #{eventSource}
+            </if>
+            <if test="beginTime!=null">
+                and create_time <![CDATA[ >= ]]> #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime!=null">
+                and create_time <![CDATA[ < ]]> #{endTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        group by event
+    </select>
+
+    <select id="getAlarmTableByTimeType" resultType="com.xtxk.cn.dto.alarmInfo.AlarmTableDto">
+        select
+        count(*) as cnt,
+        event as eventCode,
+        catch_time as catchTime
+        from (select event,DATE_FORMAT(catch_time, #{format} ) as catch_time from t_alarm_info
+        where deleted=0
+        <if test="resourceType!=null and resourceType!=''">
+            and resource_type =#{resourceType}
+        </if>
+        <if test="beginDate!=null and endDate!=null">
+            and catch_time BETWEEN #{beginDate} and #{endDate}
+        </if>
+        ) A group by event,catch_time
+        order by catch_time asc
+    </select>
+
+    <select id="getPeronCarAlarmCountByType" resultType="com.xtxk.cn.dto.alarmInfo.PersonCarAlarmItemDto">
+        <if test="vioType==1">
+            select
+            pId as PersonOrCarId,
+            rname as PersonOrCarName,
+            cnt as vioCnt,
+            contact as contact
+            from (select pi.person_id as pId,max(pi.person_name) as rname,count(*) as cnt,max(pi.phone) as contact from t_alarm_violations_detail_info tavdi
+            inner join person_info pi on pi.person_id = tavdi.field1
+            inner join t_alarm_info tai on tai.id=tavdi.alarm_id
+            where tavdi.type=2
+            <if test="beginDate!=null and endDate!=null">
+                and tai.catch_time between #{beginDate} and #{endDate}
+            </if>
+            <if test="resourceType!=null and resourceType!=''">
+                and tai.resource_type =#{resourceType}
+            </if>
+            group by pi.person_id) A order by A.cnt desc limit 10
+        </if>
+        <if test="vioType==2">
+            select pId as PersonOrCarId,
+            rname as PersonOrCarName,
+            cnt as vioCnt,
+            contact as contact
+            from(select car.car_number as pId,max(car.car_owner_name) as rname,count(*) as cnt,max(car.car_owner_phone) as contact from t_alarm_violations_detail_info tavdi
+            inner join car_info car on car.car_number = tavdi.field1
+            inner join t_alarm_info tai on tai.id=tavdi.alarm_id
+            where tavdi.type=1
+            <if test="beginDate!=null and endDate!=null">
+            and tai.catch_time between  #{beginDate} and #{endDate}
+            </if>
+            <if test="resourceType!=null and resourceType!=''">
+                and tai.resource_type =#{resourceType}
+            </if>
+            group by car.car_number) A order by A.cnt desc limit 10
+        </if>
+    </select>
+
+    <select id="statistician" parameterType="com.xtxk.cn.dto.statistic.event.ParamDTO"
+            resultType="com.xtxk.cn.dto.statistic.event.HandVo">
+        select
+            DATE_FORMAT( catch_time,
+                <choose>
+                    <when test="type==1">'%Y-%m-%d'</when>
+                    <when test="type==2">'%Y-%m'</when>
+                    <otherwise>'%Y-%m-%d'</otherwise>
+                </choose>
+                ) time,
+            count(case when status = 4 then status end) total
+        from
+            t_alarm_info
+        <where>
+            deleted = 0
+            <if test="eventSource!=null">
+                and resource_type = #{eventSource}
+            </if>
+            <if test="beginTime!=null">
+                and create_time <![CDATA[ >= ]]> #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime!=null">
+                and create_time <![CDATA[ < ]]> #{endTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        group by time
+    </select>
+
+    <select id="staticTable" parameterType="com.xtxk.cn.dto.statistic.event.ParamDTO"
+            resultType="com.xtxk.cn.dto.statistic.event.TableDataVo">
+        select
+            event eventCode,
+            DATE_FORMAT( catch_time,
+                <choose>
+                    <when test="type==1">'%Y-%m-%d'</when>
+                    <when test="type==2">'%Y-%m'</when>
+                    <otherwise>'%Y-%m-%d'</otherwise>
+                </choose> ) time,
+            count(case when status = 4 then status end) total
+        from
+            t_alarm_info
+        <where>
+            deleted = 0
+            <if test="eventSource!=null">
+                and resource_type = #{eventSource}
+            </if>
+            <if test="beginTime!=null">
+                and create_time <![CDATA[ >= ]]> #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime!=null">
+                and create_time <![CDATA[ < ]]> #{endTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        group by event,time
+    </select>
+    
+    <select id="getAlarmIdByImageUrl" resultType="Integer">
+        select id from t_alarm_info where catch_image_url=#{imageUrl}
+    </select>
+</mapper>

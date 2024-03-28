@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xtxk.cn.third.mapper.OilCarInformationMapper">
+    <resultMap id="BaseResultMap" type="com.xtxk.cn.third.entity.car.OilCarInformation">
+        <id column="infor_primary_id" property="INFOR_PRIMARY_ID" jdbcType="VARCHAR"/>
+        <result column="user_unit_code" property="USER_UNIT_CODE" jdbcType="VARCHAR"/>
+        <result column="user_unit_name" property="USER_UNIT_NAME" jdbcType="VARCHAR"/>
+        <result column="vehicle_brand" property="VEHICLE_BRAND" jdbcType="VARCHAR"/>
+        <result column="vehicle_type" property="VEHICLE_TYPE" jdbcType="VARCHAR"/>
+        <result column="vehicle_owner" property="VEHICLE_OWNER" jdbcType="VARCHAR"/>
+        <result column="person_liable" property="PERSON_LIABLE" jdbcType="VARCHAR"/>
+        <result column="id_number" property="ID_NUMBER" jdbcType="VARCHAR"/>
+        <result column="card_number" property="CARD_NUMBER" jdbcType="VARCHAR"/>
+        <result column="address" property="ADDRESS" jdbcType="VARCHAR"/>
+        <result column="entry_time" property="ENTRY_TIME" jdbcType="TIMESTAMP"/>
+        <result column="use_nature" property="USE_NATURE" jdbcType="VARCHAR"/>
+        <result column="brand_model" property="BRAND_MODEL" jdbcType="VARCHAR"/>
+        <result column="vehicle_identi_code" property="VEHICLE_IDENTI_CODE" jdbcType="VARCHAR"/>
+        <result column="engine_number" property="ENGINE_NUMBER" jdbcType="VARCHAR"/>
+        <result column="registration_date" property="REGISTRATION_DATE" jdbcType="TIMESTAMP"/>
+        <result column="issue_date" property="ISSUE_DATE" jdbcType="TIMESTAMP"/>
+        <result column="authoriz_pass_name" property="AUTHORIZ_PASS_NAME" jdbcType="REAL"/>
+        <result column="nuclear_payload" property="NUCLEAR_PAYLOAD" jdbcType="REAL"/>
+        <result column="current_state" property="CURRENT_STATE" jdbcType="VARCHAR"/>
+        <result column="lasttime" property="LASTTIME" jdbcType="TIMESTAMP"/>
+        <result column="user_id" property="USER_ID" jdbcType="VARCHAR"/>
+        <result column="user_name" property="USER_NAME" jdbcType="VARCHAR"/>
+        <result column="start_effective_Time" property="START_EFFECTIVE_TIME" jdbcType="TIMESTAMP"/>
+        <result column="end_effective_Time" property="END_EFFECTIVE_TIME" jdbcType="TIMESTAMP"/>
+        <result column="remarks" property="REMARKS" jdbcType="VARCHAR"/>
+        <result column="update_date" property="UPDATE_DATE" jdbcType="TIMESTAMP"/>
+        <result column="date_region" property="DATA_REGION" jdbcType="VARCHAR"/>
+        <result column="bsflag" property="BSFLAG" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    infor_primary_id, user_unit_code, user_unit_name, vehicle_brand, vehicle_type, vehicle_owner,
+    person_liable,id_number, card_number, address, entry_time, use_nature, brand_model, vehicle_identi_code,
+    engine_number, registration_date, issue_date, authoriz_pass_name, nuclear_payload, 
+    current_state, lasttime, user_id, user_name, start_effective_Time, end_effective_Time,
+    remarks, update_date, date_region, bsflag
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from oil_car_information
+        where infor_primary_id = #{INFOR_PRIMARY_ID,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from oil_car_information
+        where infor_primary_id = #{INFOR_PRIMARY_ID,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.xtxk.cn.third.entity.car.OilCarInformation">
+        insert into oil_car_information
+            (infor_primary_id, user_unit_code, user_unit_name,vehicle_brand, vehicle_type, vehicle_owner,
+            person_liable,id_number, card_number, address,entry_time, use_nature, brand_model,
+            vehicle_identi_code, engine_number, registration_date,issue_date, authoriz_pass_name, nuclear_payload,
+            current_state, lasttime, user_id, user_name, start_effective_Time, end_effective_Time,
+            remarks, update_date, date_region,bsflag)
+        values (#{INFOR_PRIMARY_ID,jdbcType=VARCHAR}, #{USER_UNIT_CODE,jdbcType=VARCHAR}, #{USER_UNIT_NAME,jdbcType=VARCHAR},
+                #{VEHICLE_BRAND,jdbcType=VARCHAR}, #{VEHICLE_TYPE,jdbcType=VARCHAR}, #{VEHICLE_OWNER,jdbcType=VARCHAR},
+                #{PERSON_LIABLE,jdbcType=VARCHAR},#{ID_NUMBER,jdbcType=VARCHAR}, #{CARD_NUMBER,jdbcType=VARCHAR}, #{ADDRESS,jdbcType=VARCHAR},
+                #{ENTRY_TIME,jdbcType=TIMESTAMP}, #{USE_NATURE,jdbcType=VARCHAR}, #{BRAND_MODEL,jdbcType=VARCHAR},
+                #{VEHICLE_IDENTI_CODE,jdbcType=VARCHAR}, #{ENGINE_NUMBER,jdbcType=VARCHAR},
+                #{REGISTRATION_DATE,jdbcType=TIMESTAMP},
+                #{ISSUE_DATE,jdbcType=TIMESTAMP}, #{AUTHORIZ_PASS_NAME,jdbcType=REAL}, #{NUCLEAR_PAYLOAD,jdbcType=REAL},
+                #{CURRENT_STATE,jdbcType=VARCHAR}, #{LASTTIME,jdbcType=TIMESTAMP}, #{USER_ID,jdbcType=VARCHAR},
+                #{USER_NAME,jdbcType=VARCHAR}, #{START_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+                #{END_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+                #{REMARKS,jdbcType=VARCHAR}, #{UPDATE_DATE,jdbcType=TIMESTAMP}, #{DATA_REGION,jdbcType=VARCHAR},
+                #{BSFLAG,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xtxk.cn.third.entity.car.OilCarInformation">
+        insert into oil_car_information
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="INFOR_PRIMARY_ID != null">
+                infor_primary_id,
+            </if>
+            <if test="USER_UNIT_CODE != null">
+                user_unit_code,
+            </if>
+            <if test="USER_UNIT_NAME != null">
+                user_unit_name,
+            </if>
+            <if test="VEHICLE_BRAND != null">
+                vehicle_brand,
+            </if>
+            <if test="VEHICLE_TYPE != null">
+                vehicle_type,
+            </if>
+            <if test="VEHICLE_OWNER != null">
+                vehicle_owner,
+            </if>
+            <if test="PERSON_LIABLE != null">
+                person_liable,
+            </if>
+            <if test="ID_NUMBER != null">
+                id_number,
+            </if>
+            <if test="CARD_NUMBER != null">
+                card_number,
+            </if>
+            <if test="ADDRESS != null">
+                address,
+            </if>
+            <if test="ENTRY_TIME != null">
+                entry_time,
+            </if>
+            <if test="USE_NATURE != null">
+                use_nature,
+            </if>
+            <if test="BRAND_MODEL != null">
+                brand_model,
+            </if>
+            <if test="VEHICLE_IDENTI_CODE != null">
+                vehicle_identi_code,
+            </if>
+            <if test="ENGINE_NUMBER != null">
+                engine_number,
+            </if>
+            <if test="REGISTRATION_DATE != null">
+                registration_date,
+            </if>
+            <if test="ISSUE_DATE != null">
+                issue_date,
+            </if>
+            <if test="AUTHORIZ_PASS_NAME != null">
+                authoriz_pass_name,
+            </if>
+            <if test="NUCLEAR_PAYLOAD != null">
+                nuclear_payload,
+            </if>
+            <if test="CURRENT_STATE != null">
+                current_state,
+            </if>
+            <if test="LASTTIME != null">
+                lasttime,
+            </if>
+            <if test="USER_ID != null">
+                user_id,
+            </if>
+            <if test="USER_NAME != null">
+                user_name,
+            </if>
+            <if test="START_EFFECTIVE_TIME != null">
+                start_effective_Time,
+            </if>
+            <if test="END_EFFECTIVE_TIME != null">
+                end_effective_Time,
+            </if>
+            <if test="REMARKS != null">
+                remarks,
+            </if>
+            <if test="UPDATE_DATE != null">
+                update_date,
+            </if>
+            <if test="DATA_REGION != null">
+                date_region,
+            </if>
+            <if test="BSFLAG != null">
+                bsflag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="INFOR_PRIMARY_ID != null">
+                #{INFOR_PRIMARY_ID,jdbcType=VARCHAR},
+            </if>
+            <if test="USER_UNIT_CODE != null">
+                #{USER_UNIT_CODE,jdbcType=VARCHAR},
+            </if>
+            <if test="USER_UNIT_NAME != null">
+                #{USER_UNIT_NAME,jdbcType=VARCHAR},
+            </if>
+            <if test="VEHICLE_BRAND != null">
+                #{VEHICLE_BRAND,jdbcType=VARCHAR},
+            </if>
+            <if test="VEHICLE_TYPE != null">
+                #{VEHICLE_TYPE,jdbcType=VARCHAR},
+            </if>
+            <if test="VEHICLE_OWNER != null">
+                #{VEHICLE_OWNER,jdbcType=VARCHAR},
+            </if>
+            <if test="PERSON_LIABLE != null">
+                #{PERSON_LIABLE,jdbcType=VARCHAR},
+            </if>
+            <if test="ID_NUMBER != null">
+                #{ID_NUMBER,jdbcType=VARCHAR},
+            </if>
+            <if test="CARD_NUMBER != null">
+                #{CARD_NUMBER,jdbcType=VARCHAR},
+            </if>
+            <if test="ADDRESS != null">
+                #{ADDRESS,jdbcType=VARCHAR},
+            </if>
+            <if test="ENTRY_TIME != null">
+                #{ENTRY_TIME,jdbcType=TIMESTAMP},
+            </if>
+            <if test="USE_NATURE != null">
+                #{USE_NATURE,jdbcType=VARCHAR},
+            </if>
+            <if test="BRAND_MODEL != null">
+                #{BRAND_MODEL,jdbcType=VARCHAR},
+            </if>
+            <if test="VEHICLE_IDENTI_CODE != null">
+                #{VEHICLE_IDENTI_CODE,jdbcType=VARCHAR},
+            </if>
+            <if test="ENGINE_NUMBER != null">
+                #{ENGINE_NUMBER,jdbcType=VARCHAR},
+            </if>
+            <if test="REGISTRATION_DATE != null">
+                #{REGISTRATION_DATE,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ISSUE_DATE != null">
+                #{ISSUE_DATE,jdbcType=TIMESTAMP},
+            </if>
+            <if test="AUTHORIZ_PASS_NAME != null">
+                #{AUTHORIZ_PASS_NAME,jdbcType=REAL},
+            </if>
+            <if test="NUCLEAR_PAYLOAD != null">
+                #{NUCLEAR_PAYLOAD,jdbcType=REAL},
+            </if>
+            <if test="CURRENT_STATE != null">
+                #{CURRENT_STATE,jdbcType=VARCHAR},
+            </if>
+            <if test="LASTTIME != null">
+                #{LASTTIME,jdbcType=TIMESTAMP},
+            </if>
+            <if test="USER_ID != null">
+                #{USER_ID,jdbcType=VARCHAR},
+            </if>
+            <if test="USER_NAME != null">
+                #{USER_NAME,jdbcType=VARCHAR},
+            </if>
+            <if test="START_EFFECTIVE_TIME != null">
+                #{START_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+            </if>
+            <if test="END_EFFECTIVE_TIME != null">
+                #{END_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+            </if>
+            <if test="REMARKS != null">
+                #{REMARKS,jdbcType=VARCHAR},
+            </if>
+            <if test="UPDATE_DATE != null">
+                #{UPDATE_DATE,jdbcType=TIMESTAMP},
+            </if>
+            <if test="DATA_REGION != null">
+                #{DATA_REGION,jdbcType=VARCHAR},
+            </if>
+            <if test="BSFLAG != null">
+                #{BSFLAG,jdbcType=INTEGER},
+            </if>
+        </trim>
+        on duplicate key update
+        user_unit_code       = #{USER_UNIT_CODE,jdbcType=VARCHAR},
+        user_unit_name       = #{USER_UNIT_NAME,jdbcType=VARCHAR},
+        vehicle_brand        = #{VEHICLE_BRAND,jdbcType=VARCHAR},
+        vehicle_type         = #{VEHICLE_TYPE,jdbcType=VARCHAR},
+        vehicle_owner        = #{VEHICLE_OWNER,jdbcType=VARCHAR},
+        person_liable        = #{PERSON_LIABLE,jdbcType=VARCHAR},
+        id_number            = #{ID_NUMBER,jdbcType=VARCHAR},
+        card_number          = #{CARD_NUMBER,jdbcType=VARCHAR},
+        address              = #{ADDRESS,jdbcType=VARCHAR},
+        entry_time           = #{ENTRY_TIME,jdbcType=TIMESTAMP},
+        use_nature           = #{USE_NATURE,jdbcType=VARCHAR},
+        brand_model          = #{BRAND_MODEL,jdbcType=VARCHAR},
+        vehicle_identi_code  = #{VEHICLE_IDENTI_CODE,jdbcType=VARCHAR},
+        engine_number        = #{ENGINE_NUMBER,jdbcType=VARCHAR},
+        registration_date    = #{REGISTRATION_DATE,jdbcType=TIMESTAMP},
+        issue_date           = #{ISSUE_DATE,jdbcType=TIMESTAMP},
+        authoriz_pass_name   = #{AUTHORIZ_PASS_NAME,jdbcType=REAL},
+        nuclear_payload      = #{NUCLEAR_PAYLOAD,jdbcType=REAL},
+        current_state        = #{CURRENT_STATE,jdbcType=VARCHAR},
+        lasttime             = #{LASTTIME,jdbcType=TIMESTAMP},
+        user_id              = #{USER_ID,jdbcType=VARCHAR},
+        user_name            = #{USER_NAME,jdbcType=VARCHAR},
+        start_effective_Time = #{START_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+        end_effective_Time   = #{END_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+        remarks              = #{REMARKS,jdbcType=VARCHAR},
+        update_date          = #{UPDATE_DATE,jdbcType=TIMESTAMP},
+        date_region          = #{DATA_REGION,jdbcType=VARCHAR},
+        bsflag               = #{BSFLAG,jdbcType=INTEGER}
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xtxk.cn.third.entity.car.OilCarInformation">
+        update oil_car_information
+        <set>
+            <if test="USER_UNIT_CODE != null">
+                user_unit_code = #{USER_UNIT_CODE,jdbcType=VARCHAR},
+            </if>
+            <if test="USER_UNIT_NAME != null">
+                user_unit_name = #{USER_UNIT_NAME,jdbcType=VARCHAR},
+            </if>
+            <if test="VEHICLE_BRAND != null">
+                vehicle_brand = #{VEHICLE_BRAND,jdbcType=VARCHAR},
+            </if>
+            <if test="VEHICLE_TYPE != null">
+                vehicle_type = #{VEHICLE_TYPE,jdbcType=VARCHAR},
+            </if>
+            <if test="VEHICLE_OWNER != null">
+                vehicle_owner = #{VEHICLE_OWNER,jdbcType=VARCHAR},
+            </if>
+            <if test="PERSON_LIABLE != null">
+                person_liable = #{PERSON_LIABLE,jdbcType=VARCHAR},
+            </if>
+            <if test="ID_NUMBER != null">
+                id_number = #{ID_NUMBER,jdbcType=VARCHAR},
+            </if>
+            <if test="CARD_NUMBER != null">
+                card_number = #{CARD_NUMBER,jdbcType=VARCHAR},
+            </if>
+            <if test="ADDRESS != null">
+                address = #{ADDRESS,jdbcType=VARCHAR},
+            </if>
+            <if test="ENTRY_TIME != null">
+                entry_time = #{ENTRY_TIME,jdbcType=TIMESTAMP},
+            </if>
+            <if test="USE_NATURE != null">
+                use_nature = #{USE_NATURE,jdbcType=VARCHAR},
+            </if>
+            <if test="BRAND_MODEL != null">
+                brand_model = #{BRAND_MODEL,jdbcType=VARCHAR},
+            </if>
+            <if test="VEHICLE_IDENTI_CODE != null">
+                vehicle_identi_code = #{VEHICLE_IDENTI_CODE,jdbcType=VARCHAR},
+            </if>
+            <if test="ENGINE_NUMBER != null">
+                engine_number = #{ENGINE_NUMBER,jdbcType=VARCHAR},
+            </if>
+            <if test="REGISTRATION_DATE != null">
+                registration_date = #{REGISTRATION_DATE,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ISSUE_DATE != null">
+                issue_date = #{ISSUE_DATE,jdbcType=TIMESTAMP},
+            </if>
+            <if test="AUTHORIZ_PASS_NAME != null">
+                authoriz_pass_name = #{AUTHORIZ_PASS_NAME,jdbcType=REAL},
+            </if>
+            <if test="NUCLEAR_PAYLOAD != null">
+                nuclear_payload = #{NUCLEAR_PAYLOAD,jdbcType=REAL},
+            </if>
+            <if test="CURRENT_STATE != null">
+                current_state = #{CURRENT_STATE,jdbcType=VARCHAR},
+            </if>
+            <if test="LASTTIME != null">
+                lasttime = #{LASTTIME,jdbcType=TIMESTAMP},
+            </if>
+            <if test="USER_ID != null">
+                user_id = #{USER_ID,jdbcType=VARCHAR},
+            </if>
+            <if test="USER_NAME != null">
+                user_name = #{USER_NAME,jdbcType=VARCHAR},
+            </if>
+            <if test="START_EFFECTIVE_TIME != null">
+                start_effective_Time = #{START_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+            </if>
+            <if test="END_EFFECTIVE_TIME != null">
+                end_effective_Time = #{END_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+            </if>
+            <if test="REMARKS != null">
+                remarks = #{REMARKS,jdbcType=VARCHAR},
+            </if>
+            <if test="UPDATE_DATE != null">
+                update_date = #{UPDATE_DATE,jdbcType=TIMESTAMP},
+            </if>
+            <if test="DATA_REGION != null">
+                date_region = #{DATA_REGION,jdbcType=VARCHAR},
+            </if>
+            <if test="BSFLAG != null">
+                bsflag = #{BSFLAG,jdbcType=INTEGER},
+            </if>
+        </set>
+        where infor_primary_id = #{INFOR_PRIMARY_ID,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xtxk.cn.third.entity.car.OilCarInformation">
+        update oil_car_information
+        set user_unit_code       = #{USER_UNIT_CODE,jdbcType=VARCHAR},
+            user_unit_name       = #{USER_UNIT_NAME,jdbcType=VARCHAR},
+            vehicle_brand        = #{VEHICLE_BRAND,jdbcType=VARCHAR},
+            vehicle_type         = #{VEHICLE_TYPE,jdbcType=VARCHAR},
+            vehicle_owner        = #{VEHICLE_OWNER,jdbcType=VARCHAR},
+            person_liable        = #{PERSON_LIABLE,jdbcType=VARCHAR},
+            id_number            = #{ID_NUMBER,jdbcType=VARCHAR},
+            card_number          = #{CARD_NUMBER,jdbcType=VARCHAR},
+            address              = #{ADDRESS,jdbcType=VARCHAR},
+            entry_time           = #{ENTRY_TIME,jdbcType=TIMESTAMP},
+            use_nature           = #{USE_NATURE,jdbcType=VARCHAR},
+            brand_model          = #{BRAND_MODEL,jdbcType=VARCHAR},
+            vehicle_identi_code  = #{VEHICLE_IDENTI_CODE,jdbcType=VARCHAR},
+            engine_number        = #{ENGINE_NUMBER,jdbcType=VARCHAR},
+            registration_date    = #{REGISTRATION_DATE,jdbcType=TIMESTAMP},
+            issue_date           = #{ISSUE_DATE,jdbcType=TIMESTAMP},
+            authoriz_pass_name   = #{AUTHORIZ_PASS_NAME,jdbcType=REAL},
+            nuclear_payload      = #{NUCLEAR_PAYLOAD,jdbcType=REAL},
+            current_state        = #{CURRENT_STATE,jdbcType=VARCHAR},
+            lasttime             = #{LASTTIME,jdbcType=TIMESTAMP},
+            user_id              = #{USER_ID,jdbcType=VARCHAR},
+            user_name            = #{USER_NAME,jdbcType=VARCHAR},
+            start_effective_Time = #{START_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+            end_effective_Time   = #{END_EFFECTIVE_TIME,jdbcType=TIMESTAMP},
+            remarks              = #{REMARKS,jdbcType=VARCHAR},
+            update_date          = #{UPDATE_DATE,jdbcType=TIMESTAMP},
+            date_region          = #{DATA_REGION,jdbcType=VARCHAR},
+            bsflag               = #{BSFLAG,jdbcType=INTEGER}
+        where infor_primary_id = #{INFOR_PRIMARY_ID,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectList" resultType="com.xtxk.cn.third.entity.car.OilCarInformation">
+        select
+               infor_primary_id INFOR_PRIMARY_ID,
+               vehicle_brand VEHICLE_BRAND,
+               vehicle_type  VEHICLE_TYPE,
+               vehicle_owner VEHICLE_OWNER,
+               BSFLAG        BSFLAG
+        from oil_car_information
+    </select>
+
+    <select id="streamQueryCarList" resultType="com.xtxk.cn.third.entity.car.OilCarInformation" fetchSize="5000">
+        select
+            infor_primary_id INFOR_PRIMARY_ID,
+            vehicle_brand VEHICLE_BRAND,
+            vehicle_type  VEHICLE_TYPE,
+            vehicle_owner VEHICLE_OWNER,
+            BSFLAG        BSFLAG
+        from oil_car_information
+    </select>
+</mapper>
