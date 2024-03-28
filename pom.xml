@@ -12,6 +12,7 @@
         <module>business-server-app</module>
         <module>recognition-prepare-service</module>
         <module>third-platform-service</module>
+        <module>third-platform-service</module>
     </modules>
     <properties>
         <!--项目依赖-->
